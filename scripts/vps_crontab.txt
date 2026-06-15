@@ -1,0 +1,36 @@
+# OKX Bot VPS crontab snapshot (admin user)
+# Install: crontab /home/admin/okx_bot/scripts/vps_crontab.txt
+# Verify: crontab -l
+
+SHELL=/bin/bash
+PATH=/usr/local/bin:/usr/bin:/bin
+
+# Alert probe — every 5 min
+*/5 * * * * /home/admin/okx_bot/scripts/okx_bot_alert.sh >> /home/admin/okx_bot/logs/alert_cron.log 2>&1
+
+# Health snapshot — every 5 min (AI / health_check single source)
+*/5 * * * * cd /home/admin/okx_bot && /home/admin/okx_bot/venv/bin/python3 /home/admin/okx_bot/scripts/health_snapshot.py >> /home/admin/okx_bot/logs/health_snapshot_cron.log 2>&1
+
+# War report — 已改为「平仓即时」refresh_war_report_accurate（main.py），不再定时全量生成
+# 对账脚本 hourly 仍会 refresh 战报作兜底
+
+# Log rotation — daily 03:05
+5 3 * * * /home/admin/okx_bot/scripts/rotate_bot_logs.sh >> /home/admin/okx_bot/logs/rotate_cron.log 2>&1
+
+# realized_legs 瘦身 — daily 04:20（保留最近 40 天，见 prune_old_realized_legs.py --days）
+20 4 * * * cd /home/admin/okx_bot && /home/admin/okx_bot/venv/bin/python3 /home/admin/okx_bot/scripts/prune_old_realized_legs.py --refresh-war >> /home/admin/okx_bot/logs/prune_legs_cron.log 2>&1
+
+# OKX net 对账兜底 — hourly :25（本地与交易所错位时自动修正）
+25 * * * * cd /home/admin/okx_bot && /home/admin/okx_bot/venv/bin/python3 /home/admin/okx_bot/scripts/reconcile_all_from_okx.py >> /home/admin/okx_bot/logs/reconcile_cron.log 2>&1
+
+# Indicator align JSON — every 2 min (desktop/bot对照真源)
+*/2 * * * * cd /home/admin/okx_bot && /home/admin/okx_bot/venv/bin/python3 /home/admin/okx_bot/scripts/okx_align_refresh.py >> /home/admin/okx_bot/logs/align_refresh.log 2>&1
+
+# Paper signals T01–T05 — every 15 min (no orders)
+*/15 * * * * cd /home/admin/okx_bot/test_lab && /home/admin/okx_bot/venv/bin/python3 paper_signal_lab.py >> paper_cron.log 2>&1
+
+# Four-strategy autopilot — backtest + evolve + guard (Louis 不参与)
+0 8 * * * cd /home/admin/okx_bot/test_lab && OKX_CANDLE_SOURCE=http /home/admin/okx_bot/venv/bin/python3 strategy_autopilot.py >> /home/admin/okx_bot/logs/strategy_autopilot.log 2>&1
+
+# Plan observer after autopilot
+5 8 * * * cd /home/admin/okx_bot/test_lab && /home/admin/okx_bot/venv/bin/python3 plan_observe.py >> /home/admin/okx_bot/logs/strategy_plan_observe.log 2>&1
