@@ -1,0 +1,21 @@
+name: Syntax Check
+on: [push, pull_request]
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Check Python syntax
+        run: |
+          failed=0
+          for f in $(find . -name '*.py' -not -path './.git/*'); do
+            python3 -c "import ast; ast.parse(open('$f').read())" 2>/dev/null || {
+              echo "❌ SYNTAX ERROR: $f"
+              failed=1
+            }
+          done
+          if [ $failed -eq 1 ]; then exit 1; fi
+          echo "✅ All Python files pass syntax check"
