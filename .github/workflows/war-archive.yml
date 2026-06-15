@@ -1,0 +1,17 @@
+name: War Report Archive
+on:
+  schedule:
+    - cron: '0 17 * * *'  # 每天01:00 CST (17:00 UTC)
+  workflow_dispatch:  # 手动触发
+
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch latest war report from VPS
+        run: |
+          echo ⚠️ 自动存档需要 VPS_SSH_KEY 密钥配置
+          echo 配置方法: https://github.com/kahehduukahdgdu396274-cpu/louisgap/settings/secrets/actions
+          echo 新建 Secret: VPS_SSH_KEY = VPS 的 SSH 私钥
+          echo VPS_HOST = admin@8.219.138.103
