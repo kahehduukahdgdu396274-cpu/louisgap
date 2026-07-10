@@ -1,0 +1,3 @@
+('worker maintenance', 'ALLOW')
+('worker runtime misuse', 'BLOCK')
+('unknown writer', 'BLOCK')
