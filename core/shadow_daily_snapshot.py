@@ -1,4 +1,6 @@
 from datetime import datetime
+
+
 class ShadowDailySnapshotGenerator:
     """
     P20-12.4
@@ -20,4 +22,31 @@ class ShadowDailySnapshotGenerator:
             "observe_only": True,
             "writers": writers,
             "total_events": len(events),
+        }
+
+
+class ShadowDailySnapshot:
+    """
+    P20-13.4 Shadow Daily Snapshot
+    Readonly snapshot generator.
+    No production mutation.
+    """
+    def __init__(self, events=None):
+        self.events = events or []
+
+    def generate(self):
+        writers = {}
+        for event in self.events:
+            writer = event.get(
+                "writer",
+                "UNKNOWN"
+            )
+            writers[writer] = (
+                writers.get(writer, 0) + 1
+            )
+        return {
+            "timestamp": datetime.utcnow().isoformat(),
+            "event_count": len(self.events),
+            "writers": writers,
+            "observe_only": True,
         }
