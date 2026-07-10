@@ -1,0 +1,6 @@
+main.py runtime ALLOW {'allowed': True, 'level': 'L0_RUNTIME', 'writer': 'main.py'}
+position_state.py runtime ALLOW {'allowed': True, 'level': 'L0_RUNTIME', 'writer': 'position_state.py'}
+state_maintenance_worker.py maintenance ALLOW {'allowed': True, 'level': 'L1_MAINTENANCE', 'writer': 'state_maintenance_worker.py'}
+state_maintenance_worker.py runtime BLOCK {"allowed": false, "reason": "maintenance writer requires maintenance mode", "writer": "state_maintenance_worker.py"}
+reconcile_all_from_okx.py runtime BLOCK {"allowed": false, "reason": "readonly component", "writer": "reconcile_all_from_okx.py"}
+unknown.py runtime BLOCK {"allowed": false, "reason": "unknown writer blocked", "writer": "unknown.py"}

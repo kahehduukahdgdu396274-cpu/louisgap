@@ -1,0 +1,1 @@
+d938dc0779ab46b738faf06d5088fc701d475431ef1f61fb4daa4920ec50c763  core/write_gate.py
