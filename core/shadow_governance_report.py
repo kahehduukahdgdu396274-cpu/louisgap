@@ -1,33 +1,21 @@
-from datetime import datetime
-class ShadowGovernanceReportGenerator:
-    """
-    P20-12.5
-    Generate governance report from shadow snapshot.
-    Read-only observation output.
-    """
+"""
+P20-13.5 Shadow Governance Report
+Readonly report generator.
+No production mutation.
+"""
+class ShadowGovernanceReport:
     def generate(self, snapshot):
-        writers = snapshot.get("writers", {})
-        violations = []
-        for writer, info in writers.items():
-            if writer.startswith("unknown"):
-                violations.append({
-                    "writer": writer,
-                    "status": "UNKNOWN",
-                    "permission": "BLOCK",
-                })
+        writers = snapshot.get(
+            "writers",
+            {}
+        )
         return {
-            "generated_at": datetime.utcnow().isoformat(),
-            "mode": "shadow",
-            "observe_only": True,
-            "total_events": snapshot.get(
-                "total_events",
+            "event_count": snapshot.get(
+                "event_count",
                 0
             ),
             "writers": writers,
-            "violations": violations,
-            "status": (
-                "REVIEW_REQUIRED"
-                if violations
-                else "PASS"
-            ),
+            "writer_count": len(writers),
+            "observe_only": True,
+            "status": "SHADOW_ONLY",
         }
