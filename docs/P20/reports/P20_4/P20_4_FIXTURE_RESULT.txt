@@ -1,0 +1,6 @@
+main.py => ALLOW_RUNTIME
+position_state.py => ALLOW_RUNTIME
+state_maintenance_worker.py => ALLOW_MAINTENANCE
+reconcile_all_from_okx.py => READONLY
+build_war_report.py => READONLY
+unknown_writer.py => BLOCK
