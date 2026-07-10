@@ -24,3 +24,4 @@ hermes_*.json
 position_*.json
 !scripts/*.py
 audit/writer_events.jsonl
+!config/writer_registry.json

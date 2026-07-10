@@ -1,0 +1,41 @@
+{
+  "version": "P20-10.2",
+  "mode": "observe_only",
+  "writers": {
+    "main.py": {
+      "level": "L0",
+      "owner": "runtime",
+      "permission": "ALLOW_RUNTIME"
+    },
+    "position_state.py": {
+      "level": "L0",
+      "owner": "runtime",
+      "permission": "ALLOW_RUNTIME"
+    },
+    "state_maintenance_worker.py": {
+      "level": "L1",
+      "owner": "maintenance",
+      "permission": "ALLOW_MAINTENANCE"
+    },
+    "reconcile_all_from_okx.py": {
+      "level": "L2",
+      "owner": "audit",
+      "permission": "READONLY"
+    },
+    "build_war_report.py": {
+      "level": "L3",
+      "owner": "report",
+      "permission": "READONLY"
+    },
+    "govern_state_legs.py": {
+      "level": "L4",
+      "owner": "legacy",
+      "permission": "BLOCK"
+    },
+    "prune_old_realized_legs.py": {
+      "level": "L4",
+      "owner": "legacy",
+      "permission": "BLOCK"
+    }
+  }
+}
