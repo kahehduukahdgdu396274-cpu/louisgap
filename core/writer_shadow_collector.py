@@ -12,8 +12,22 @@ class WriterShadowCollector:
     def __init__(self, pipeline: WriterAuditPipeline):
         self.pipeline = pipeline
         self.events: List[Dict[str, Any]] = []
-    def observe(self, event: Dict[str, Any]) -> Dict[str, Any]:
-        result = self.pipeline.record(event)
+    def observe(
+        self,
+        event: Dict[str, Any] | None = None,
+        **kwargs: Any,
+    ) -> Dict[str, Any]:
+        payload = dict(kwargs) if kwargs else dict(event or {})
+        if not payload:
+            raise ValueError("observe requires event dict or kwargs")
+        try:
+            result = self.pipeline.record(
+                payload["writer"],
+                payload.get("action"),
+                payload.get("target"),
+            )
+        except TypeError:
+            result = self.pipeline.record(payload)
         self.events.append(result)
         return result
     def report(self) -> Dict[str, Any]:
