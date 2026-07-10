@@ -1,0 +1,17 @@
+412d224 (HEAD -> p20-development) P20-7 validate maintenance worker gate integration
+c8fbf93 P20-6 isolate legacy writers with production guard
+cd345f9 P20-5 define writer migration implementation design
+aaae3f7 P20-4.4 validate maintenance gate staging integration
+46e4e43 P20-4.3 add maintenance worker write gate adapter fixture
+1b92370 P20-4.2 design writer migration plan
+a2d5862 P20-4.1 implement isolated write gate layer
+a3a8008 P20-4 create write gate fixture validation framework
+deb4750 P20-3 define writer ownership matrix and write gate design
+bc022ec P20-2 complete writer ownership audit
+09cf373 P20-1 complete read-only architecture audit
+5ea617a P20 create development scope freeze and roadmap
+b1d10a7 P20 initialize development branch from P19 frozen baseline
+1cc55f2 (tag: P19_FINAL_BASELINE_20260710, p19-final-freeze-commit) P19 FINAL production freeze baseline 2026-07-10
+4602277 (origin/main, main) chore: add war archive workflow scaffold
+0c1d402 chore: add Python syntax check workflow
+9c39c46 Initial commit: OKX demo trading bot

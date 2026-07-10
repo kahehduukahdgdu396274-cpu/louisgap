@@ -1,0 +1,9 @@
+● okx_bot.service - OKX Demo Trading Bot (BTC-USDT-SWAP 15m)
+     Loaded: loaded (/etc/systemd/system/okx_bot.service; enabled; preset: enabled)
+     Active: active (running) since Fri 2026-07-10 08:17:46 CST; 3h 52min ago
+   Main PID: 2864113 (python3)
+      Tasks: 5 (limit: 1853)
+     Memory: 124.4M (peak: 163.1M)
+        CPU: 7min 2.448s
+     CGroup: /system.slice/okx_bot.service
+             └─2864113 /home/admin/okx_bot/venv/bin/python3 -u /home/admin/okx_bot/main.py
