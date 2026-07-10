@@ -1,0 +1,45 @@
+scripts/govern_state_legs.py:# bot 运行时写入的归因；禁止 cron/backfill 写入 OKX回补（历史膨胀源）
+scripts/govern_state_legs.py:# 单次 verify 剔除超过此数须显式 --allow-untrusted（防启动/ cron 误删历史腿）
+scripts/generate_dashboard.py:入口保留以兼容cron，实际调用 generate_dashboard_v2.py
+scripts/generate_health_report.py:入口保留以兼容cron，实际调用 generate_系统健康.py
+scripts/run_simulated_live.py:推荐 cron: */1 * * * * (每1分钟循环)
+scripts/generate_today_consistency.py:import sys, os, json, subprocess
+scripts/okx_align_checker.py:import subprocess
+scripts/okx_align_checker.py:    out = subprocess.check_output(cmd, text=True)
+scripts/okx_align_checker.py:    subprocess.run(
+scripts/okx_align_checker.py:    out = subprocess.check_output(cmd, text=True, stderr=subprocess.STDOUT)
+scripts/generate_dashboard_v2.py:import sys, os, json, subprocess
+scripts/generate_dashboard_v2.py:        r = subprocess.run(
+scripts/generate_dashboard_v2.py:        r = subprocess.run(["systemctl", "is-active", "okx_bot"], capture_output=True, text=True, timeout=5)
+scripts/generate_weekly_review.py:import sys, os, json, subprocess
+scripts/generate_weekly_review.py:        r = subprocess.run(["systemctl", "show", "okx_bot.service", "-p", "ActiveEnterTimestamp"],
+scripts/generate_weekly_review.py:        r = subprocess.run(["ps", "-o", "rss=", "-p",
+scripts/generate_weekly_review.py:                           subprocess.run(["systemctl", "show", "okx_bot.service", "-p", "MainPID", "--value"],
+scripts/generate_weekly_review.py:        r = subprocess.run(["systemctl", "is-active", "okx_bot.service"], capture_output=True, text=True, timeout=5)
+scripts/generate_weekly_review.py:        r = subprocess.run(["grep", "-c", "CRITICAL", f"{BOT_DIR}/logs/bot_systemd.log"], capture_output=True, text=True, timeout=5)
+scripts/health_snapshot.py:import subprocess
+scripts/health_snapshot.py:        out = subprocess.run(
+scripts/health_snapshot.py:        subprocess.run(
+scripts/health_snapshot.py:            ["systemctl", "is-active", "okx_bot"],
+scripts/update_outcomes.py:可以配置为cron: */30 * * * * python3 .../update_outcomes.py
+scripts/sys_health.py:import json, os, subprocess, time
+scripts/sys_health.py:        r = subprocess.run(cmd, capture_output=True, text=True, shell=True, timeout=timeout)
+scripts/sys_health.py:    except subprocess.TimeoutExpired:
+scripts/sys_health.py:    out, rc = run("systemctl is-active okx-bot 2>/dev/null")
+scripts/generate_war_report_md.py:入口保留以兼容cron，实际调用 generate_每日战报.py
+scripts/reconcile_all_from_okx.py:import subprocess
+scripts/reconcile_all_from_okx.py:    proc = subprocess.run(cmd, env=env, capture_output=True, text=True)
+scripts/generate_validation_report.py:入口保留以兼容cron，实际调用 generate_决策验证.py
+scripts/pure_reset_for_test.py:import subprocess
+scripts/pure_reset_for_test.py:    r = subprocess.run(cmd, capture_output=True, text=True)
+scripts/pure_reset_for_test.py:    _run(["sudo", "systemctl", "stop", "okx_bot"], check=False)
+scripts/pure_reset_for_test.py:    _run(["sudo", "systemctl", "start", "okx_bot"])
+scripts/pure_reset_for_test.py:    _run(["systemctl", "is-active", "okx_bot"])
+scripts/pure_reset_for_test.py:    subprocess.run([py, v3, "--empty"], check=True, cwd=BASE)
+scripts/build_war_report.py:import subprocess
+scripts/build_war_report.py:    path = os.path.join(LOG_DIR, f"war_cron_{datetime.now().strftime('%Y%m%d')}.log")
+scripts/build_war_report.py:    """删除 reset 边界之前的 trades.csv 行（防止 00:10 cron 回填历史）。"""
+scripts/build_war_report.py:    """剔除 OKX回补 膨胀腿（cron/backfill 历史污染），保留 bot 可信归因。"""
+scripts/build_war_report.py:    """平仓后立即写入，避免等 cron / fills 接口。"""
+scripts/build_war_report.py:    result = subprocess.run(
+scripts/build_war_report.py:    """防止战报 cron 多实例并发写坏 xlsx。"""

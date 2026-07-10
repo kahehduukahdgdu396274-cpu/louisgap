@@ -1,0 +1,154 @@
+scripts/analyze_trades_pnl.py:        war = json.load(open(wp, encoding="utf-8"))
+scripts/govern_state_legs.py:from position_state import load_state, save_state  # noqa: E402
+scripts/govern_state_legs.py:    save_state(state, BASE)
+scripts/govern_state_legs.py:    save_state(state, BASE)
+scripts/generate_每日战报.py:    with open(out_path, "w", encoding="utf-8") as f:
+scripts/trade_review.py:        cutoff = now.replace(hour=0, minute=0, second=0)
+scripts/trade_review.py:        cutoff = cutoff.replace(hour=0, minute=0, second=0)
+scripts/trade_review.py:    with open(REVIEWS_JSON, "w") as f:
+scripts/trade_review.py:        json.dump(output, f, ensure_ascii=False, indent=2)
+scripts/trade_review.py:        with open(PARAM_JSON, "w") as f:
+scripts/trade_review.py:            json.dump({"更新时间": output["更新时间"], "全量分析": all_bins}, f, ensure_ascii=False, indent=2)
+scripts/state_maintenance_worker.py:    print(f"{SUMMARY_PREFIX}{json.dumps(summary, ensure_ascii=False)}")
+scripts/state_maintenance_worker.py:        from position_state import load_state, save_state
+scripts/state_maintenance_worker.py:        save_state(state, base_dir)
+scripts/state_maintenance_worker.py:        from position_state import load_state, save_state
+scripts/state_maintenance_worker.py:                save_state(state, base_dir)
+scripts/state_maintenance_worker.py:                save_state(state, base_dir)
+scripts/prune_old_realized_legs.py:from position_state import load_state, save_state  # noqa: E402
+scripts/prune_old_realized_legs.py:    save_state(state, BASE)
+scripts/generate_dashboard.py:    print(json.dumps(d, ensure_ascii=False, indent=2))
+scripts/generate_portfolio_report.py:    with open(out_path, "w", encoding="utf-8") as f:
+scripts/run_strategy_lab.py:    with open(tmp, "w", encoding="utf-8") as f:
+scripts/run_strategy_lab.py:        json.dump(sb, f, ensure_ascii=False, indent=2)
+scripts/run_strategy_lab.py:    os.replace(tmp, sb_path)
+scripts/run_simulated_live.py:    with open(tmp, "w") as f:
+scripts/run_simulated_live.py:        json.dump(eq, f)
+scripts/run_simulated_live.py:    os.replace(tmp, EQ_FILE)
+scripts/run_simulated_live.py:        with open(tmp, "w") as f:
+scripts/run_simulated_live.py:            json.dump(data, f)
+scripts/run_simulated_live.py:        os.replace(tmp, pf(sid))
+scripts/run_simulated_live.py:    with open(tmp, "w") as f:
+scripts/run_simulated_live.py:        json.dump(sb, f, ensure_ascii=False, indent=2)
+scripts/run_simulated_live.py:    os.replace(tmp, sb_path)
+scripts/generate_today_consistency.py:    with open(out_path, "w", encoding="utf-8") as f:
+scripts/single_source_audit.py:    with open(out_path, "w", encoding="utf-8") as f:
+scripts/okx_align_checker.py:        print(json.dumps(bot, indent=2, ensure_ascii=False))
+scripts/generate_dashboard_v2.py:        with open(tmp, "w", encoding="utf-8") as f:
+scripts/generate_dashboard_v2.py:            json.dump(dashboard, f, ensure_ascii=False, indent=2)
+scripts/generate_dashboard_v2.py:        os.replace(tmp, out_path)
+scripts/generate_dashboard_v2.py:        print(json.dumps(d, ensure_ascii=False, indent=2))
+scripts/generate_weekly_review.py:        return r.stdout.strip().replace("ActiveEnterTimestamp=", "")
+scripts/generate_weekly_review.py:    with open(out_path, "w", encoding="utf-8") as f:
+scripts/health_snapshot.py:            safe_lock_blocked = json.loads(m.group(1).replace("'", '"'))
+scripts/health_snapshot.py:    tmp.write_text(json.dumps(snap, ensure_ascii=False, indent=2), encoding="utf-8")
+scripts/health_snapshot.py:    tmp.replace(OUT)
+scripts/okx_align_refresh.py:    print(json.dumps({k: data.get(k) for k in [
+scripts/generate_lab_report.py:    with open(out_path, "w", encoding="utf-8") as f:
+scripts/sys_health.py:    json.dump(health, open(OUT, "w"), ensure_ascii=False, indent=2)
+scripts/generate_promotion_report.py:            ok = report.get("gate_results", {}).get(key.replace("days_running","days_ok").replace("total_trades","trades_ok").replace("profit_factor","pf_ok").replace("expectancy","expectancy_ok").replace("max_drawdown_pct","dd_ok").replace("avg_signal_quality","sq_ok").replace("long_pf","long_pf_ok").replace("short_pf","short_pf_ok"), False)
+scripts/generate_promotion_report.py:    with open(out_path, "w", encoding="utf-8") as f:
+scripts/weekly_eq_adjust.py:    with open(tmp, "w") as f:
+scripts/weekly_eq_adjust.py:        json.dump({k: round(v, 2) for k, v in eq.items()}, f, indent=2)
+scripts/weekly_eq_adjust.py:    os.replace(tmp, EQ_FILE)
+scripts/weekly_eq_adjust.py:    with open(STATS_FILE, "w") as f:
+scripts/weekly_eq_adjust.py:        json.dump(report, f, ensure_ascii=False, indent=2)
+scripts/generate_ranking.py:    with open(out_path, "w", encoding="utf-8") as f:
+scripts/generate_今日决策.py:    with open(out_path, "w", encoding="utf-8") as f:
+scripts/reconcile_all_from_okx.py:    save_state,
+scripts/reconcile_all_from_okx.py:            save_state(state, BASE)
+scripts/reconcile_all_from_okx.py:        with open(tmp, "w", encoding="utf-8") as fp:
+scripts/reconcile_all_from_okx.py:            json.dump(data, fp)
+scripts/reconcile_all_from_okx.py:        os.replace(tmp, os.path.join(BASE, f"position_{sid}.json"))
+scripts/reconcile_all_from_okx.py:            with open(path + ".tmp", "w", encoding="utf-8") as fp:
+scripts/reconcile_all_from_okx.py:                json.dump(data, fp)
+scripts/reconcile_all_from_okx.py:            os.replace(path + ".tmp", path)
+scripts/migrate_capital_ledger.py:    with open(ledger_path, "w", encoding="utf-8") as f:
+scripts/migrate_capital_ledger.py:        json.dump(ledger, f, ensure_ascii=False, indent=2)
+scripts/migrate_capital_ledger.py:    print(json.dumps(entry, ensure_ascii=False))
+scripts/archive/one_shot/repair_021_missing_close.py:from position_state import load_state, save_state  # noqa: E402
+scripts/archive/one_shot/repair_021_missing_close.py:                save_state(state, BASE)
+scripts/archive/one_shot/repair_021_missing_close.py:    save_state(state, BASE)
+scripts/archive/one_shot/fix_indent.py:    c = c.replace(old, new)
+scripts/archive/one_shot/fix_indent.py:open("main.py", "w").write(c)
+scripts/reconcile_equity.py:            with open(tmp, "w", encoding="utf-8") as f:
+scripts/reconcile_equity.py:                json.dump(dash, f, ensure_ascii=False, indent=2)
+scripts/reconcile_equity.py:            os.replace(tmp, dash_path)
+scripts/generate_系统健康.py:    with open(out_path, "w", encoding="utf-8") as f:
+scripts/pure_reset_for_test.py:        with open(tmp, "w", encoding="utf-8") as fp:
+scripts/pure_reset_for_test.py:            json.dump(data, fp)
+scripts/pure_reset_for_test.py:        os.replace(tmp, path)
+scripts/pure_reset_for_test.py:    with open(os.path.join(BASE, "state.json"), "w", encoding="utf-8") as fp:
+scripts/pure_reset_for_test.py:        json.dump(EMPTY_STATE, fp, ensure_ascii=False)
+scripts/pure_reset_for_test.py:    with open(os.path.join(BASE, "strategy_eq.json"), "w", encoding="utf-8") as fp:
+scripts/pure_reset_for_test.py:        json.dump(FRESH_EQ, fp, indent=2)
+scripts/pure_reset_for_test.py:    with open(os.path.join(BASE, "cooldown.json"), "w", encoding="utf-8") as fp:
+scripts/pure_reset_for_test.py:        json.dump({}, fp)
+scripts/pure_reset_for_test.py:    with open(pending, "w", encoding="utf-8") as fp:
+scripts/pure_reset_for_test.py:        json.dump([], fp)
+scripts/pure_reset_for_test.py:    with open(os.path.join(BASE, "trades.csv"), "w", encoding="utf-8") as fp:
+scripts/pure_reset_for_test.py:    with open(os.path.join(BASE, "war_reset_after_ms.txt"), "w", encoding="utf-8") as fp:
+scripts/pure_reset_for_test.py:    with open(os.path.join(logs, "war_updated_at.txt"), "w", encoding="utf-8") as fp:
+scripts/backfill_missing_legs.py:    with open(tmp, "w", encoding="utf-8") as f:
+scripts/backfill_missing_legs.py:        json.dump(state, f, ensure_ascii=False)
+scripts/backfill_missing_legs.py:    os.replace(tmp, STATE_JSON)
+scripts/backfill_missing_legs.py:    with open(bak, "w", encoding="utf-8") as f:
+scripts/backfill_missing_legs.py:        json.dump(state, f, ensure_ascii=False)
+scripts/backfill_missing_legs.py:    with open(STATE_JSON, "w", encoding="utf-8") as f:
+scripts/backfill_missing_legs.py:        json.dump(state, f, ensure_ascii=False)
+scripts/backfill_missing_legs.py:            json.dump(json.load(f), open(STATE_JSON, "w", encoding="utf-8"), ensure_ascii=False)
+scripts/backfill_missing_legs.py:    os.replace(bak, STATE_JSON)
+scripts/backfill_missing_legs.py:    with open(STATE_JSON, "w", encoding="utf-8") as f:
+scripts/backfill_missing_legs.py:        json.dump(orig, f, ensure_ascii=False)
+scripts/generate_health_v2.py:    with open(out_path, "w", encoding="utf-8") as f:
+scripts/build_war_report.py:        with open(os.path.join(LOG_DIR, "war_accurate.log"), "a", encoding="utf-8") as f:
+scripts/build_war_report.py:    body = json.dumps(params) if params is not None else ""
+scripts/build_war_report.py:        with open(tmp, "w", encoding="utf-8") as f:
+scripts/build_war_report.py:            json.dump(state, f, ensure_ascii=False)
+scripts/build_war_report.py:        os.replace(tmp, STATE_JSON)
+scripts/build_war_report.py:        with open(TRADES_CSV, "w", newline="", encoding="utf-8") as f:
+scripts/build_war_report.py:        with open(TRADES_CSV, "w", newline="", encoding="utf-8") as f:
+scripts/build_war_report.py:    with open(TRADES_CSV, "w", newline="", encoding="utf-8") as f:
+scripts/build_war_report.py:        with open(TRADES_CSV, "w", newline="", encoding="utf-8") as f:
+scripts/build_war_report.py:        with open(TRADES_CSV, "w", newline="", encoding="utf-8") as f:
+scripts/build_war_report.py:        from position_state import load_state, save_state, compute_net_position
+scripts/build_war_report.py:    save_state(state, base_dir)
+scripts/build_war_report.py:        from position_state import load_state, save_state
+scripts/build_war_report.py:    save_state(state, base_dir)
+scripts/build_war_report.py:        sid = name.replace("position_", "").replace(".json", "")
+scripts/build_war_report.py:        from position_state import save_state  # noqa: E402
+scripts/build_war_report.py:        save_state(state, BASE_DIR)
+scripts/build_war_report.py:    with open(TRADES_CSV, "w", newline="", encoding="utf-8") as f:
+scripts/build_war_report.py:        with open(tmp, "w", encoding="utf-8") as f:
+scripts/build_war_report.py:            json.dump(state, f, ensure_ascii=False)
+scripts/build_war_report.py:        os.replace(tmp, STATE_JSON)
+scripts/build_war_report.py:    with open(TRADES_CSV, "a", newline="", encoding="utf-8") as f:
+scripts/build_war_report.py:        with open(TRADES_CSV, "w", newline="", encoding="utf-8") as f:
+scripts/build_war_report.py:        with open(TRADES_CSV, "w", newline="", encoding="utf-8") as f:
+scripts/build_war_report.py:        with open(TRADES_CSV, "w", newline="", encoding="utf-8") as f:
+scripts/build_war_report.py:    old_sig = json.dumps(rows, ensure_ascii=False, sort_keys=True)
+scripts/build_war_report.py:    new_sig = json.dumps(merged, ensure_ascii=False, sort_keys=True)
+scripts/build_war_report.py:        with open(TRADES_CSV, "w", newline="", encoding="utf-8") as f:
+scripts/build_war_report.py:    with open(TRADES_CSV, "a", newline="", encoding="utf-8") as f:
+scripts/build_war_report.py:    lock_fp = open(TRADES_LOCKFILE, "w")
+scripts/build_war_report.py:        with open(TRADES_CSV, "a", newline="", encoding="utf-8") as f:
+scripts/build_war_report.py:        with open(TRADES_CSV, "a", newline="", encoding="utf-8") as f:
+scripts/build_war_report.py:    fp = open(lock_path, "w", encoding="utf-8")
+scripts/build_war_report.py:    with open(tmp, "w", encoding="utf-8") as fp:
+scripts/build_war_report.py:        json.dump(state, fp, ensure_ascii=False)
+scripts/build_war_report.py:    os.replace(tmp, path)
+scripts/build_war_report.py:        with open(ts_path, "w", encoding="utf-8") as fp:
+scripts/build_war_report.py:    lock_fp_csv = open(TRADES_LOCKFILE, "w")
+scripts/build_war_report.py:    with open(ts_path, "w", encoding="utf-8") as fp:
+scripts/generate_决策验证.py:    with open(out_path, "w", encoding="utf-8") as f:
+scripts/generate_lifecycle_report.py:    with open(out_path, "w", encoding="utf-8") as f:
+scripts/rebuild_strategy_eq.py:    with open(path, newline="", encoding="utf-8") as f:
+scripts/rebuild_strategy_eq.py:        with open(path, "w", newline="", encoding="utf-8") as f:
+scripts/rebuild_strategy_eq.py:        with open(path, newline="", encoding="utf-8") as f:
+scripts/rebuild_strategy_eq.py:        with open(path, "w", newline="", encoding="utf-8") as f:
+scripts/rebuild_strategy_eq.py:    with open(tmp, "w", encoding="utf-8") as f:
+scripts/rebuild_strategy_eq.py:        json.dump({s: final_eq[s] for s in STRATEGY_IDS}, f, ensure_ascii=False, indent=2)
+scripts/rebuild_strategy_eq.py:    os.replace(tmp, eq_path)
+scripts/rebuild_strategy_eq.py:    with open(st_tmp, "w", encoding="utf-8") as f:
+scripts/rebuild_strategy_eq.py:        json.dump(state, f, ensure_ascii=False)
+scripts/rebuild_strategy_eq.py:    os.replace(st_tmp, state_path)

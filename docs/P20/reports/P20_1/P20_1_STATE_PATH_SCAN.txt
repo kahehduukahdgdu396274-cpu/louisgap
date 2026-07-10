@@ -1,0 +1,174 @@
+scripts/analyze_trades_pnl.py:"""One-shot trades.csv PnL distribution (run on VPS or Mac mirror)."""
+scripts/analyze_trades_pnl.py:    path = BASE / "trades.csv"
+scripts/analyze_trades_pnl.py:    print(f"trades.csv @ {path}")
+scripts/analyze_trades_pnl.py:    eq_path = BASE / "strategy_eq.json"
+scripts/govern_state_legs.py:"""治理 state.json realized_legs：剔除 OKX回补 膨胀腿，保留 bot 可信归因。"""
+scripts/govern_state_legs.py:from position_state import load_state, save_state  # noqa: E402
+scripts/govern_state_legs.py:STATE_JSON = os.path.join(BASE, "state.json")
+scripts/generate_每日战报.py:    if d.get("position_details"):
+scripts/generate_每日战报.py:        for p in d.get("position_details", []):
+scripts/trade_review.py:基于 trades.csv 数据，结合 strategies.py 逻辑做交易级复盘。
+scripts/trade_review.py:TRADES_CSV = os.path.join(BASE, "trades.csv")
+scripts/trade_review.py:    """对一行trades.csv记录评分"""
+scripts/state_maintenance_worker.py:    b.TRADES_CSV = os.path.join(base_dir, "trades.csv")
+scripts/state_maintenance_worker.py:    b.STATE_JSON = os.path.join(base_dir, "state.json")
+scripts/state_maintenance_worker.py:def _backup_state(base_dir: str, label: str = "state.json.bak") -> str | None:
+scripts/state_maintenance_worker.py:    state_path = os.path.join(base_dir, "state.json")
+scripts/state_maintenance_worker.py:        from position_state import load_state, save_state
+scripts/state_maintenance_worker.py:    state_path = os.path.join(base_dir, "state.json")
+scripts/state_maintenance_worker.py:        from position_state import load_state, save_state
+scripts/state_maintenance_worker.py:                from position_state import compute_net_position
+scripts/state_maintenance_worker.py:    state_path = os.path.join(base_dir, "state.json")
+scripts/state_maintenance_worker.py:            from position_state import load_state
+scripts/state_maintenance_worker.py:            b.dedup_trades_csv()
+scripts/state_maintenance_worker.py:    state_path = os.path.join(base_dir, "state.json")
+scripts/state_maintenance_worker.py:        from position_state import load_state
+scripts/state_maintenance_worker.py:            trades_path = os.path.join(base_dir, "trades.csv")
+scripts/prune_old_realized_legs.py:"""每日瘦身 state.json realized_legs：仅保留最近 N 天（默认 40，允许 30–45）。"""
+scripts/prune_old_realized_legs.py:from position_state import load_state, save_state  # noqa: E402
+scripts/prune_old_realized_legs.py:STATE_JSON = os.path.join(BASE, "state.json")
+scripts/prune_old_realized_legs.py:    ap.add_argument("--refresh-war", action="store_true", help="瘦身後重建 trades.csv 并刷新战报")
+scripts/audit_open_ord_fills.py:    state = json.load(open(os.path.join(BASE, "state.json"), encoding="utf-8"))
+scripts/generate_portfolio_report.py:    eq = _load_json("strategy_eq.json")
+scripts/generate_portfolio_report.py:    state = _load_json("state.json")
+scripts/run_simulated_live.py:EQ_FILE = os.path.join(BOT_DIR, "strategy_eq.json")
+scripts/run_simulated_live.py:def pf(sid): return os.path.join(BOT_DIR, f"position_{sid}.json")
+scripts/generate_dashboard_v2.py:def _get_position_pnl(positions):
+scripts/generate_dashboard_v2.py:            pos_file = os.path.join(BOT_DIR, f"position_{sid}.json")
+scripts/generate_dashboard_v2.py:    strategy_eq = _load_json("strategy_eq.json")
+scripts/generate_dashboard_v2.py:    pos_details, pos_pnl = _get_position_pnl(open_positions)
+scripts/generate_dashboard_v2.py:        "position_details": pos_details,
+scripts/generate_dashboard_v2.py:        "position_pnl": pos_pnl,
+scripts/health_snapshot.py:    """心跳标签与 position_*.json 不一致的策略（内存未重载时的残留）。"""
+scripts/health_snapshot.py:        path = BASE_DIR / f"position_{sid}.json"
+scripts/health_snapshot.py:    path = BASE_DIR / "state.json"
+scripts/health_snapshot.py:    eq_path = BASE_DIR / "strategy_eq.json"
+scripts/okx_net_alignment.py:    """从 state.json 读取净持仓张数（多为正、空为负）。"""
+scripts/okx_net_alignment.py:    path = os.path.join(base, "state.json")
+scripts/okx_net_alignment.py:    """position_*.json 折算净张数。"""
+scripts/okx_net_alignment.py:        path = os.path.join(base, f"position_{sid}.json")
+scripts/okx_net_alignment.py:    """state.json tranches 分别折算多/空腿张数。"""
+scripts/okx_net_alignment.py:    path = os.path.join(base, "state.json")
+scripts/okx_net_alignment.py:    """position_*.json 分别折算多/空腿张数。"""
+scripts/okx_net_alignment.py:        path = os.path.join(base, f"position_{sid}.json")
+scripts/okx_net_alignment.py:def position_fingerprint(
+scripts/okx_net_alignment.py:    path = os.path.join(base, "state.json")
+scripts/okx_net_alignment.py:    """position_*.json 开仓策略映射。"""
+scripts/okx_net_alignment.py:        path = os.path.join(base, f"position_{sid}.json")
+scripts/okx_net_alignment.py:                position_fingerprint(
+scripts/okx_net_alignment.py:                position_fingerprint(
+scripts/okx_net_alignment.py:            position_fingerprint(sid, st["direction"], st["qty"], st["entry_price"], st_oid)
+scripts/okx_net_alignment.py:            position_fingerprint(sid, ps["direction"], ps["qty"], ps["entry_price"], ps_oid)
+scripts/okx_net_alignment.py:        "position_sids": sorted(ps_map.keys()),
+scripts/okx_net_alignment.py:        "position_net": local_pos,
+scripts/okx_net_alignment.py:        "position_long": ps_long,
+scripts/okx_net_alignment.py:        "position_short": ps_short,
+scripts/manage_baseline.py:    eq_file = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "strategy_eq.json")
+scripts/weekly_eq_adjust.py:EQ_FILE = os.path.join(BASE, "strategy_eq.json")
+scripts/weekly_eq_adjust.py:TRADES_CSV = os.path.join(BASE, "trades.csv")
+scripts/drain_pending_close_legs.py:from position_state import (  # noqa: E402
+scripts/generate_ranking.py:    eqs = load_json("strategy_eq.json")
+scripts/reconcile_all_from_okx.py:"""Reconcile all strategy position_*.json + state.json to match OKX net via LIFO open fills."""
+scripts/reconcile_all_from_okx.py:from position_state import (  # noqa: E402
+scripts/reconcile_all_from_okx.py:    for name in ("state.json", "trades.csv"):
+scripts/reconcile_all_from_okx.py:        pf = os.path.join(BASE, f"position_{sid}.json")
+scripts/reconcile_all_from_okx.py:    """写入 position_*.json（按策略汇总）+ state tranches（每笔归因一行）。"""
+scripts/reconcile_all_from_okx.py:        tmp = os.path.join(BASE, f"position_{sid}.json.tmp")
+scripts/reconcile_all_from_okx.py:        os.replace(tmp, os.path.join(BASE, f"position_{sid}.json"))
+scripts/reconcile_all_from_okx.py:        f"pos_files={align.get('position_net')} aligned={align.get('aligned')}"
+scripts/reconcile_all_from_okx.py:            path = os.path.join(BASE, f"position_{sid}.json")
+scripts/reconcile_all_from_okx.py:        b.reconcile_state_from_position_files(BASE)
+scripts/archive/one_shot/repair_021_missing_close.py:from position_state import load_state, save_state  # noqa: E402
+scripts/archive/one_shot/repair_021_missing_close.py:    for name in ("state.json", "trades.csv"):
+scripts/archive/check_current.py:s = json.load(open("/home/admin/okx_bot/state.json"))
+scripts/archive/check_current.py:print("\n=== position_013.json ===")
+scripts/archive/check_current.py:print(open("/home/admin/okx_bot/position_013.json").read())
+scripts/archive/check_current.py:print("=== position_003.json ===")
+scripts/archive/check_current.py:print(open("/home/admin/okx_bot/position_003.json").read())
+scripts/archive/check_current.py:print("=== position_006.json ===")
+scripts/archive/check_current.py:print(open("/home/admin/okx_bot/position_006.json").read())
+scripts/reconcile_equity.py:  2. 读取 strategy_eq.json
+scripts/generate_系统健康.py:        for p in d.get("position_details", d.get("open_positions", [])):
+scripts/pure_reset_for_test.py:        "state.json", "trades.csv", "strategy_eq.json", "cooldown.json",
+scripts/pure_reset_for_test.py:        pf = os.path.join(BASE, f"position_{sid}.json")
+scripts/pure_reset_for_test.py:            shutil.copy2(pf, os.path.join(dest, f"position_{sid}.json"))
+scripts/pure_reset_for_test.py:    trades = os.path.join(BASE, "trades.csv")
+scripts/pure_reset_for_test.py:    print(f"OK: trades.csv -> trades_archive.csv")
+scripts/pure_reset_for_test.py:        path = os.path.join(BASE, f"position_{sid}.json")
+scripts/pure_reset_for_test.py:    with open(os.path.join(BASE, "state.json"), "w", encoding="utf-8") as fp:
+scripts/pure_reset_for_test.py:    with open(os.path.join(BASE, "strategy_eq.json"), "w", encoding="utf-8") as fp:
+scripts/pure_reset_for_test.py:    with open(os.path.join(BASE, "trades.csv"), "w", encoding="utf-8") as fp:
+scripts/pure_reset_for_test.py:    state = json.load(open(os.path.join(BASE, "state.json"), encoding="utf-8"))
+scripts/backfill_missing_legs.py:"""按 close_ord_id 安全回补 state.json 缺失平仓腿（禁止 OKX回补 / size-FIFO 膨胀）。"""
+scripts/backfill_missing_legs.py:STATE_JSON = os.path.join(BASE, "state.json")
+scripts/consistency_audit.py:eq_file = os.path.join(bot_dir, "strategy_eq.json")
+scripts/consistency_audit.py:# 读 realized_pnl (从 state.json realized_legs 汇总)
+scripts/consistency_audit.py:state_file = os.path.join(bot_dir, "state.json")
+scripts/report_fills_window_legs.py:    state = json.load(open(os.path.join(BASE, "state.json"), encoding="utf-8"))
+scripts/load_legacy_trades.py:load_legacy_trades.py — 从state.json加载历史成交到performance
+scripts/load_legacy_trades.py:# 读state.json
+scripts/load_legacy_trades.py:state_file = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "state.json")
+scripts/load_legacy_trades.py:    print("state.json 不存在")
+scripts/load_legacy_trades.py:print(f"从state.json加载 {len(realized_legs)} 条历史成交")
+scripts/build_war_report.py:1) 拉 OKX fills（limit=100）→ 开/平仓配对写入 trades.csv
+scripts/build_war_report.py:TRADES_CSV = os.path.join(BASE_DIR, "trades.csv")
+scripts/build_war_report.py:STATE_JSON = os.path.join(BASE_DIR, "state.json")
+scripts/build_war_report.py:    eq_path = os.path.join(BASE_DIR, "strategy_eq.json")
+scripts/build_war_report.py:    """state.json realized_legs → close_ord_id → equity_after。"""
+scripts/build_war_report.py:    """将回放后的 equity_after 写回 state.json realized_legs。"""
+scripts/build_war_report.py:        log(f"[equity] state.json 更新{updated}条 equity_after")
+scripts/build_war_report.py:    """删除 reset 边界之前的 trades.csv 行（防止 00:10 cron 回填历史）。"""
+scripts/build_war_report.py:        "数据源": "state_json_batch",
+scripts/build_war_report.py:    """state.json realized_legs：按 OKX 同策略同开仓同平仓分钟合并。"""
+scripts/build_war_report.py:    """对 trades.csv 已平仓行按 OKX 同策略平仓规则合并并重算权益金。"""
+scripts/build_war_report.py:    log(f"[batch] trades.csv 合并{collapsed}笔，剩余已平仓{len(closed)}")
+scripts/build_war_report.py:def dedup_trades_csv():
+scripts/build_war_report.py:    if _bwr_skip_maintenance("dedup_trades_csv"):
+scripts/build_war_report.py:        from position_state import load_state, save_state, compute_net_position
+scripts/build_war_report.py:        from position_state import load_state, save_state
+scripts/build_war_report.py:    """OKX 开平配对 → state.json realized_leg。"""
+scripts/build_war_report.py:    """state.json + trades.csv 已记账的平仓 ordId（防 FIFO 全量覆盖）。"""
+scripts/build_war_report.py:def reconcile_state_from_position_files(base_dir=None):
+scripts/build_war_report.py:    """以 position_*.json 为真源，同步 state.json 开仓 tranches。"""
+scripts/build_war_report.py:        from position_state import load_state
+scripts/build_war_report.py:            log("[state] 跳过多 tranche 持仓拆分，保留 state.json 明细")
+scripts/build_war_report.py:        if not name.startswith("position_") or not name.endswith(".json"):
+scripts/build_war_report.py:        sid = name.replace("position_", "").replace(".json", "")
+scripts/build_war_report.py:        from position_state import reconcile_state_from_tracker
+scripts/build_war_report.py:    """用 state.json 完全重建 trades.csv（已平仓 + 当前 tranche 持仓中）。"""
+scripts/build_war_report.py:        from position_state import save_state  # noqa: E402
+scripts/build_war_report.py:            "数据源": "state_json",
+scripts/build_war_report.py:    log(f"[rebuild] trades.csv 自 state 重建: 已平仓{sum(1 for r in rows if r.get('状态')=='已平仓')} "
+scripts/build_war_report.py:    """轻量修正 state.json realized_legs（去重 + 校验）；FIFO/批次合并需显式开启。"""
+scripts/build_war_report.py:def build_trades_csv(fills):
+scripts/build_war_report.py:    """删除旧的持仓中残留行，仅保留 state.json 对应的真实 tranche 持仓。"""
+scripts/build_war_report.py:        log(f"[open_rows] 清理{removed}条旧持仓中残留行，等待按 state.json 重建")
+scripts/build_war_report.py:    """state.json realized_legs → trades.csv 行（fills 缺失时回补）。"""
+scripts/build_war_report.py:        "数据源": "state_json_est" if est else "state_json",
+scripts/build_war_report.py:    """state.json realized_legs，仅 reset 后的平仓腿（可选校验过滤）。"""
+scripts/build_war_report.py:    if src == "state_json" and reason not in ("state归因", ""):
+scripts/build_war_report.py:    if src.startswith("state_json") or reason == "state归因":
+scripts/build_war_report.py:    """以 state.json realized_legs 为 bot 归因真源，修正 trades.csv 策略错位/缺失/幽灵持仓。"""
+scripts/build_war_report.py:    """OKX fills 查不到时，用 state.json realized_legs 回补已平仓（禁止重复 ordId）。"""
+scripts/build_war_report.py:        log("[state] state.json 不存在，跳过已平仓回补")
+scripts/build_war_report.py:    eq_path = os.path.join(BASE_DIR, "strategy_eq.json")
+scripts/build_war_report.py:    """单条 realized_leg 写入 trades.csv（去重）；供 main.py 平仓后立即调用。"""
+scripts/build_war_report.py:    eq_path = os.path.join(BASE_DIR, "strategy_eq.json")
+scripts/build_war_report.py:    """把 bot 当前 tranche 同步为 trades.csv 中的「持仓中」行（供战报汇总显示）。"""
+scripts/build_war_report.py:    eq_path = os.path.join(BASE_DIR, "strategy_eq.json")
+scripts/build_war_report.py:        log("[持仓] state.json 不存在，跳过 tranche 持仓同步")
+scripts/build_war_report.py:            "数据源": "state_json",
+scripts/build_war_report.py:    """将校正后的 realized_leg 写回 state.json。"""
+scripts/build_war_report.py:    path = STATE_JSON if base_dir is None else os.path.join(base_dir, "state.json")
+scripts/build_war_report.py:    from position_state import compute_net_position
+scripts/build_war_report.py:    """以 state.json 只读投影重建战报 xlsx（不改 open tranche；open 仅 bot 写入）。"""
+scripts/build_war_report.py:        dedup_trades_csv()
+scripts/build_war_report.py:    """定时战报：以 state.json + position 为真源，禁止全量 fills 重建（防幽灵成交膨胀）。"""
+scripts/build_war_report.py:        bak_path = os.path.join(BASE_DIR, f"trades.csv.bak_{bak_ts}")
+scripts/build_war_report.py:        dedup_trades_csv()
+scripts/generate_lifecycle_report.py:    eq = _load_json("strategy_eq.json")
+scripts/rebuild_strategy_eq.py:"""从 state.realized_legs 回放校正 12 策略 strategy_eq.json（P17 reset 基线 200U）。
+scripts/rebuild_strategy_eq.py:  3. 写 strategy_eq.json + state equity_after + trades.csv 策略权益金
+scripts/rebuild_strategy_eq.py:STATE_FILE = "state.json"
+scripts/rebuild_strategy_eq.py:EQ_FILE = "strategy_eq.json"
+scripts/rebuild_strategy_eq.py:TRADES_FILE = "trades.csv"
