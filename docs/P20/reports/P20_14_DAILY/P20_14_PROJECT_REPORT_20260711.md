@@ -36,6 +36,7 @@ Completed:
 - EOD + Project Report 20260710
 - Repository hygiene cleanup
 - CSV ghost open-row cleanup on VPS (20260711, ops)
+- War ghost open RESOLVED — see `P20_14_OBSERVATION_NOTE_WAR_GHOST_OPEN_20260711.md`
 Pending:
 - Today (20260711) Hermes runtime evidence JSON/MD
 - safety_check.readonly=true on future evidence
@@ -49,8 +50,8 @@ Errors:
 Safety issues:
 - safety_check.readonly missing/false (in 20260710 evidence; not patched)
 - 20260710 evidence still notes orphan_csv_entry (stale snapshot)
-- 20260711 ops: cleaned 17 ghost CSV「持仓中」rows; war report now matches live 3 opens (011/012/021)
-- Note: Bot/Shadow fields above from 20260710 evidence are stale vs live health_snapshot (open=3)
+- 20260711 ops: cleaned ghost CSV「持仓中」; permanent fix deployed (readonly path syncs trades.csv)
+- War ghost open: RESOLVED — CSV/state/report aligned (021 only @ 06:03)
 
 ## Recent Commits
 ```
