@@ -1,0 +1,4 @@
+{'case': 'worker maintenance', 'result': 'ALLOW', 'detail': {'allowed': True, 'level': 'L1_MAINTENANCE', 'writer': 'state_maintenance_worker.py'}}
+{'case': 'worker runtime misuse', 'result': 'FAIL'}
+{'case': 'reconcile readonly', 'result': 'BLOCK', 'detail': {'allowed': False, 'reason': 'readonly component', 'writer': 'reconcile_all_from_okx.py'}}
+{'case': 'unknown writer', 'result': 'BLOCK', 'detail': {'allowed': False, 'reason': 'unknown writer blocked', 'writer': 'unknown_writer.py'}}
