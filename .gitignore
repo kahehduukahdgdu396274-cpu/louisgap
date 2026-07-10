@@ -25,3 +25,7 @@ position_*.json
 !scripts/*.py
 audit/writer_events.jsonl
 !config/writer_registry.json
+
+# P20-14 observation evidence (SSOT)
+!audit/observation/
+!audit/observation/*.json

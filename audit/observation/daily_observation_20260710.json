@@ -1,0 +1,94 @@
+{
+  "timestamp": "2026-07-10 20:22:18",
+  "date": "20260710",
+  "source": "P20-14 Observation Evidence Collector",
+  "runtime_status": {
+    "systemd": "active (running)",
+    "uptime_hours": 12,
+    "pid": 2864113,
+    "memory_mb": 128.0,
+    "cpu_min": 21.5,
+    "restart_count_24h": 3,
+    "memory_peak_mb": 166.4
+  },
+  "bot_status": {
+    "active": true,
+    "heartbeat": "ok - BTC $64393(WS) K:24.1 D:20.5 ADX:50",
+    "heartbeat_age_seconds": "<5",
+    "last_heartbeat_time": "2026-07-10 20:21:06",
+    "okx_positions": 2,
+    "okx_direction": "long",
+    "okx_avg_price": 64039.53,
+    "market_price": 64393,
+    "stoch_k": 24.1,
+    "stoch_d": 20.5,
+    "adx": 50
+  },
+  "shadow_events": {
+    "error_24h": [],
+    "risk_blocks": [
+      "016_loss_streak_stopped",
+      "020_loss_streak_stopped"
+    ],
+    "entry_fail_cooldown": [
+      "016",
+      "017"
+    ],
+    "open_positions": [
+      "015_long@64007.84",
+      "021_long@63759.9"
+    ],
+    "system_health": {
+      "cpu": "0%",
+      "disk": "14% 33G",
+      "load": "0.03, 0.10, 0.09",
+      "main_status": "RUNNING",
+      "systemd_status": "INACTIVE"
+    },
+    "alert_cron": "active (every 5 min)",
+    "paper_lab_cron": "active (every 15 min)",
+    "test_pipeline_cron": "active (daily 8am)"
+  },
+  "known_writers": [
+    "main.py - bot loop",
+    "ws_client.py - websocket data",
+    "strategies.py - signal generation",
+    "indicators.py - indicator calc",
+    "db.py - trade logging",
+    "api.py - OKX REST API"
+  ],
+  "unknown_writers": [],
+  "permission_blocks": {
+    "016": "loss_streak_stopped (3 consecutive losses)",
+    "020": "loss_streak_stopped (3 consecutive losses)"
+  },
+  "pipeline_status": {
+    "primary_loop": "running",
+    "websocket_feed": "active",
+    "strategy_eval": "running (12 strategies)",
+    "risk_check": "active",
+    "signal_logger": "active (signal_audit.jsonl)"
+  },
+  "safety_check": {
+    "position_mismatch": false,
+    "orphan_csv_entry": {
+      "strategy": "021",
+      "issue": "CSV ghost entry 07/09 14:30:19 @62723.7 never closed",
+      "severity": "low",
+      "real_position_ok": true
+    },
+    "entry_price_mismatch": false,
+    "capital_ledger_drift": {
+      "status": "CRITICAL (stale)",
+      "drift_pct": -42.79,
+      "note": "known discrepancy between account equity and virtual equity"
+    },
+    "direction_accuracy": {
+      "long_total": 185,
+      "long_hit": 0,
+      "short_total": 81,
+      "short_hit": 0,
+      "note": "hit/miss not populated"
+    }
+  }
+}
