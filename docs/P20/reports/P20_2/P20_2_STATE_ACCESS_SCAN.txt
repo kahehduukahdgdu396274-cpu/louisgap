@@ -1,0 +1,896 @@
+./p19_2c_sync/scripts/build_war_report.py:1) 拉 OKX fills（limit=100）→ 开/平仓配对写入 trades.csv
+./p19_2c_sync/scripts/build_war_report.py:TRADES_CSV = os.path.join(BASE_DIR, "trades.csv")
+./p19_2c_sync/scripts/build_war_report.py:STATE_JSON = os.path.join(BASE_DIR, "state.json")
+./p19_2c_sync/scripts/build_war_report.py:    eq_path = os.path.join(BASE_DIR, "strategy_eq.json")
+./p19_2c_sync/scripts/build_war_report.py:    """state.json realized_legs → close_ord_id → equity_after。"""
+./p19_2c_sync/scripts/build_war_report.py:    for leg in state.get("realized_legs") or []:
+./p19_2c_sync/scripts/build_war_report.py:    """将回放后的 equity_after 写回 state.json realized_legs。"""
+./p19_2c_sync/scripts/build_war_report.py:    for leg in state.get("realized_legs") or []:
+./p19_2c_sync/scripts/build_war_report.py:        log(f"[equity] state.json 更新{updated}条 equity_after")
+./p19_2c_sync/scripts/build_war_report.py:    """删除 reset 边界之前的 trades.csv 行（防止 00:10 cron 回填历史）。"""
+./p19_2c_sync/scripts/build_war_report.py:        "数据源": "state_json_batch",
+./p19_2c_sync/scripts/build_war_report.py:def collapse_burst_realized_legs(legs, entry_spread_min=5):
+./p19_2c_sync/scripts/build_war_report.py:    """state.json realized_legs：按 OKX 同策略同开仓同平仓分钟合并。"""
+./p19_2c_sync/scripts/build_war_report.py:    """对 trades.csv 已平仓行按 OKX 同策略平仓规则合并并重算权益金。"""
+./p19_2c_sync/scripts/build_war_report.py:    log(f"[batch] trades.csv 合并{collapsed}笔，剩余已平仓{len(closed)}")
+./p19_2c_sync/scripts/build_war_report.py:def dedup_trades_csv():
+./p19_2c_sync/scripts/build_war_report.py:    if _bwr_skip_maintenance("dedup_trades_csv"):
+./p19_2c_sync/scripts/build_war_report.py:    legs = state.get("realized_legs") or []
+./p19_2c_sync/scripts/build_war_report.py:    filtered = dedupe_realized_legs(filtered)
+./p19_2c_sync/scripts/build_war_report.py:    state["realized_legs"] = filtered
+./p19_2c_sync/scripts/build_war_report.py:    log(f"[prune_inflated] realized_legs {before}→{after}（剔除 OKX回补）")
+./p19_2c_sync/scripts/build_war_report.py:    """OKX 开平配对 → state.json realized_leg。"""
+./p19_2c_sync/scripts/build_war_report.py:def filter_valid_realized_legs(
+./p19_2c_sync/scripts/build_war_report.py:    legs = dedupe_realized_legs(legs or [])
+./p19_2c_sync/scripts/build_war_report.py:                legs = dedupe_realized_legs(legs)
+./p19_2c_sync/scripts/build_war_report.py:        collapsed, batch_n = collapse_burst_realized_legs(overlapped)
+./p19_2c_sync/scripts/build_war_report.py:def merge_realized_legs_by_ord_id(existing_legs, incoming_legs):
+./p19_2c_sync/scripts/build_war_report.py:def dedupe_realized_legs(legs):
+./p19_2c_sync/scripts/build_war_report.py:    """state.json + trades.csv 已记账的平仓 ordId（防 FIFO 全量覆盖）。"""
+./p19_2c_sync/scripts/build_war_report.py:            for leg in state.get("realized_legs") or []:
+./p19_2c_sync/scripts/build_war_report.py:    """修正 realized_legs：入场价用开仓成交均价，盈亏用策略归因（修复 net_mode fillPnl 错位）。"""
+./p19_2c_sync/scripts/build_war_report.py:    """以 position_*.json 为真源，同步 state.json 开仓 tranches。"""
+./p19_2c_sync/scripts/build_war_report.py:            log("[state] 跳过多 tranche 持仓拆分，保留 state.json 明细")
+./p19_2c_sync/scripts/build_war_report.py:        if not name.startswith("position_") or not name.endswith(".json"):
+./p19_2c_sync/scripts/build_war_report.py:        sid = name.replace("position_", "").replace(".json", "")
+./p19_2c_sync/scripts/build_war_report.py:    """用 state.json 完全重建 trades.csv（已平仓 + 当前 tranche 持仓中）。"""
+./p19_2c_sync/scripts/build_war_report.py:    legs = dedupe_realized_legs(state.get("realized_legs") or [])
+./p19_2c_sync/scripts/build_war_report.py:        state["realized_legs"] = legs
+./p19_2c_sync/scripts/build_war_report.py:        log(f"[rebuild] OKX 同策略平仓合并 {leg_merged} 笔 realized_legs")
+./p19_2c_sync/scripts/build_war_report.py:            "数据源": "state_json",
+./p19_2c_sync/scripts/build_war_report.py:    log(f"[rebuild] trades.csv 自 state 重建: 已平仓{sum(1 for r in rows if r.get('状态')=='已平仓')} "
+./p19_2c_sync/scripts/build_war_report.py:def fix_state_realized_legs(save=True, supplement_fifo=False, collapse_batch=False):
+./p19_2c_sync/scripts/build_war_report.py:    """轻量修正 state.json realized_legs（去重 + 校验）；FIFO/批次合并需显式开启。"""
+./p19_2c_sync/scripts/build_war_report.py:    raw = state.get("realized_legs") or []
+./p19_2c_sync/scripts/build_war_report.py:    collapsed, stats = filter_valid_realized_legs(
+./p19_2c_sync/scripts/build_war_report.py:    state["realized_legs"] = pre_reset + collapsed
+./p19_2c_sync/scripts/build_war_report.py:    stats["after"] = len(state["realized_legs"])
+./p19_2c_sync/scripts/build_war_report.py:def build_trades_csv(fills):
+./p19_2c_sync/scripts/build_war_report.py:    """删除旧的持仓中残留行，仅保留 state.json 对应的真实 tranche 持仓。"""
+./p19_2c_sync/scripts/build_war_report.py:        log(f"[open_rows] 清理{removed}条旧持仓中残留行，等待按 state.json 重建")
+./p19_2c_sync/scripts/build_war_report.py:    """state.json realized_legs → trades.csv 行（fills 缺失时回补）。"""
+./p19_2c_sync/scripts/build_war_report.py:        "数据源": "state_json_est" if est else "state_json",
+./p19_2c_sync/scripts/build_war_report.py:    """state.json realized_legs，仅 reset 后的平仓腿（可选校验过滤）。"""
+./p19_2c_sync/scripts/build_war_report.py:    legs = state.get("realized_legs") or []
+./p19_2c_sync/scripts/build_war_report.py:        post_reset = dedupe_realized_legs(post_reset)
+./p19_2c_sync/scripts/build_war_report.py:    if src == "state_json" and reason not in ("state归因", ""):
+./p19_2c_sync/scripts/build_war_report.py:    if src.startswith("state_json") or reason == "state归因":
+./p19_2c_sync/scripts/build_war_report.py:    """以 state.json realized_legs 为 bot 归因真源，修正 trades.csv 策略错位/缺失/幽灵持仓。"""
+./p19_2c_sync/scripts/build_war_report.py:    # P0 2026-07-03: 「open ordId 出现在 realized_legs」不等于「该仓位已全平」——
+./p19_2c_sync/scripts/build_war_report.py:    """OKX fills 查不到时，用 state.json realized_legs 回补已平仓（禁止重复 ordId）。"""
+./p19_2c_sync/scripts/build_war_report.py:        log("[state] state.json 不存在，跳过已平仓回补")
+./p19_2c_sync/scripts/build_war_report.py:    legs = state.get("realized_legs") or []
+./p19_2c_sync/scripts/build_war_report.py:    eq_path = os.path.join(BASE_DIR, "strategy_eq.json")
+./p19_2c_sync/scripts/build_war_report.py:    """单条 realized_leg 写入 trades.csv（去重）；供 main.py 平仓后立即调用。"""
+./p19_2c_sync/scripts/build_war_report.py:def append_realized_legs(legs):
+./p19_2c_sync/scripts/build_war_report.py:    eq_path = os.path.join(BASE_DIR, "strategy_eq.json")
+./p19_2c_sync/scripts/build_war_report.py:    """把 bot 当前 tranche 同步为 trades.csv 中的「持仓中」行（供战报汇总显示）。"""
+./p19_2c_sync/scripts/build_war_report.py:    eq_path = os.path.join(BASE_DIR, "strategy_eq.json")
+./p19_2c_sync/scripts/build_war_report.py:        log("[持仓] state.json 不存在，跳过 tranche 持仓同步")
+./p19_2c_sync/scripts/build_war_report.py:            "数据源": "state_json",
+./p19_2c_sync/scripts/build_war_report.py:    """将校正后的 realized_leg 写回 state.json。"""
+./p19_2c_sync/scripts/build_war_report.py:    path = STATE_JSON if base_dir is None else os.path.join(base_dir, "state.json")
+./p19_2c_sync/scripts/build_war_report.py:    for i, existing in enumerate(state.get("realized_legs", [])):
+./p19_2c_sync/scripts/build_war_report.py:            state["realized_legs"][i] = {**existing, **leg}
+./p19_2c_sync/scripts/build_war_report.py:    """以 state.json 只读投影重建战报 xlsx（不改 open tranche；open 仅 bot 写入）。"""
+./p19_2c_sync/scripts/build_war_report.py:        dedup_trades_csv()
+./p19_2c_sync/scripts/build_war_report.py:    """定时战报：以 state.json + position 为真源，禁止全量 fills 重建（防幽灵成交膨胀）。"""
+./p19_2c_sync/scripts/build_war_report.py:            bak_path = os.path.join(BASE_DIR, f"trades.csv.bak_{bak_ts}")
+./p19_2c_sync/scripts/build_war_report.py:        print("[BWR_MODE] readonly skip trades.csv backup")
+./p19_2c_sync/scripts/build_war_report.py:        dedup_trades_csv()
+./p19_a2_9_3_sync/scripts/reconcile_all_from_okx.py:"""Reconcile all strategy position_*.json + state.json to match OKX net via LIFO open fills."""
+./p19_a2_9_3_sync/scripts/reconcile_all_from_okx.py:    for name in ("state.json", "trades.csv"):
+./p19_a2_9_3_sync/scripts/reconcile_all_from_okx.py:        pf = os.path.join(BASE, f"position_{sid}.json")
+./p19_a2_9_3_sync/scripts/reconcile_all_from_okx.py:        for l in state_now.get("realized_legs", [])
+./p19_a2_9_3_sync/scripts/reconcile_all_from_okx.py:            for existing in state.get("realized_legs", []):
+./p19_a2_9_3_sync/scripts/reconcile_all_from_okx.py:    """写入 position_*.json（按策略汇总）+ state tranches（每笔归因一行）。"""
+./p19_a2_9_3_sync/scripts/reconcile_all_from_okx.py:        tmp = os.path.join(BASE, f"position_{sid}.json.tmp")
+./p19_a2_9_3_sync/scripts/reconcile_all_from_okx.py:        os.replace(tmp, os.path.join(BASE, f"position_{sid}.json"))
+./p19_a2_9_3_sync/scripts/reconcile_all_from_okx.py:    total_legs = len(state.get("realized_legs") or [])
+./p19_a2_9_3_sync/scripts/reconcile_all_from_okx.py:        f"realized_legs 总数 {total_legs} | net {state.get('net_position')} | "
+./p19_a2_9_3_sync/scripts/reconcile_all_from_okx.py:            path = os.path.join(BASE, f"position_{sid}.json")
+./p19_sync/reconcile_all_from_okx.py:"""Reconcile all strategy position_*.json + state.json to match OKX net via LIFO open fills."""
+./p19_sync/reconcile_all_from_okx.py:    for name in ("state.json", "trades.csv"):
+./p19_sync/reconcile_all_from_okx.py:        pf = os.path.join(BASE, f"position_{sid}.json")
+./p19_sync/reconcile_all_from_okx.py:        for l in state_now.get("realized_legs", [])
+./p19_sync/reconcile_all_from_okx.py:            for existing in state.get("realized_legs", []):
+./p19_sync/reconcile_all_from_okx.py:    """写入 position_*.json（按策略汇总）+ state tranches（每笔归因一行）。"""
+./p19_sync/reconcile_all_from_okx.py:        tmp = os.path.join(BASE, f"position_{sid}.json.tmp")
+./p19_sync/reconcile_all_from_okx.py:        os.replace(tmp, os.path.join(BASE, f"position_{sid}.json"))
+./p19_sync/reconcile_all_from_okx.py:    """三层对齐时的安全维护：净化幽灵腿、投影 trades.csv，不改 open tranche。"""
+./p19_sync/reconcile_all_from_okx.py:    legs = state.get("realized_legs") or []
+./p19_sync/reconcile_all_from_okx.py:    deduped = b.dedupe_realized_legs(legs)
+./p19_sync/reconcile_all_from_okx.py:        state["realized_legs"] = deduped
+./p19_sync/reconcile_all_from_okx.py:        b.dedup_trades_csv()
+./p19_sync/reconcile_all_from_okx.py:    total_legs = len(state.get("realized_legs") or [])
+./p19_sync/reconcile_all_from_okx.py:        f"realized_legs 总数 {total_legs} | net {state.get('net_position')} | "
+./p19_sync/reconcile_all_from_okx.py:            path = os.path.join(BASE, f"position_{sid}.json")
+./p19_sync/reconcile_all_from_okx.py:    # 4) dedupe realized_legs by close_ord_id
+./p19_sync/reconcile_all_from_okx.py:    legs = state.get("realized_legs") or []
+./p19_sync/reconcile_all_from_okx.py:    deduped = b.dedupe_realized_legs(legs)
+./p19_sync/reconcile_all_from_okx.py:        state["realized_legs"] = deduped
+./p19_sync/reconcile_all_from_okx.py:    # 5) rebuild trades.csv
+./p19_sync/reconcile_all_from_okx.py:    b.dedup_trades_csv()
+./backups/P19_A2_10_FINAL_20260710_113649/state_maintenance_worker.py:    b.TRADES_CSV = os.path.join(base_dir, "trades.csv")
+./backups/P19_A2_10_FINAL_20260710_113649/state_maintenance_worker.py:    b.STATE_JSON = os.path.join(base_dir, "state.json")
+./backups/P19_A2_10_FINAL_20260710_113649/state_maintenance_worker.py:def _backup_state(base_dir: str, label: str = "state.json.bak") -> str | None:
+./backups/P19_A2_10_FINAL_20260710_113649/state_maintenance_worker.py:    state_path = os.path.join(base_dir, "state.json")
+./backups/P19_A2_10_FINAL_20260710_113649/state_maintenance_worker.py:    state_path = os.path.join(base_dir, "state.json")
+./backups/P19_A2_10_FINAL_20260710_113649/state_maintenance_worker.py:        state["realized_legs"] = filtered
+./backups/P19_A2_10_FINAL_20260710_113649/state_maintenance_worker.py:        legs = state.get("realized_legs") or []
+./backups/P19_A2_10_FINAL_20260710_113649/state_maintenance_worker.py:        deduped = b.dedupe_realized_legs(legs)
+./backups/P19_A2_10_FINAL_20260710_113649/state_maintenance_worker.py:                state["realized_legs"] = deduped
+./backups/P19_A2_10_FINAL_20260710_113649/state_maintenance_worker.py:    state_path = os.path.join(base_dir, "state.json")
+./backups/P19_A2_10_FINAL_20260710_113649/state_maintenance_worker.py:            n = len(state.get("realized_legs") or []) + len(state.get("tranches") or [])
+./backups/P19_A2_10_FINAL_20260710_113649/state_maintenance_worker.py:            b.dedup_trades_csv()
+./backups/P19_A2_10_FINAL_20260710_113649/state_maintenance_worker.py:    state_path = os.path.join(base_dir, "state.json")
+./backups/P19_A2_10_FINAL_20260710_113649/state_maintenance_worker.py:        for leg in state.get("realized_legs") or []
+./backups/P19_A2_10_FINAL_20260710_113649/state_maintenance_worker.py:            trades_path = os.path.join(base_dir, "trades.csv")
+./backups/P19_A2_10_FINAL_20260710_113649/reconcile_all_from_okx.py:"""Reconcile all strategy position_*.json + state.json to match OKX net via LIFO open fills."""
+./backups/P19_A2_10_FINAL_20260710_113649/reconcile_all_from_okx.py:    for name in ("state.json", "trades.csv"):
+./backups/P19_A2_10_FINAL_20260710_113649/reconcile_all_from_okx.py:        pf = os.path.join(BASE, f"position_{sid}.json")
+./backups/P19_A2_10_FINAL_20260710_113649/reconcile_all_from_okx.py:        for l in state_now.get("realized_legs", [])
+./backups/P19_A2_10_FINAL_20260710_113649/reconcile_all_from_okx.py:            for existing in state.get("realized_legs", []):
+./backups/P19_A2_10_FINAL_20260710_113649/reconcile_all_from_okx.py:    """写入 position_*.json（按策略汇总）+ state tranches（每笔归因一行）。"""
+./backups/P19_A2_10_FINAL_20260710_113649/reconcile_all_from_okx.py:        tmp = os.path.join(BASE, f"position_{sid}.json.tmp")
+./backups/P19_A2_10_FINAL_20260710_113649/reconcile_all_from_okx.py:        os.replace(tmp, os.path.join(BASE, f"position_{sid}.json"))
+./backups/P19_A2_10_FINAL_20260710_113649/reconcile_all_from_okx.py:    total_legs = len(state.get("realized_legs") or [])
+./backups/P19_A2_10_FINAL_20260710_113649/reconcile_all_from_okx.py:        f"realized_legs 总数 {total_legs} | net {state.get('net_position')} | "
+./backups/P19_A2_10_FINAL_20260710_113649/reconcile_all_from_okx.py:            path = os.path.join(BASE, f"position_{sid}.json")
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:1) 拉 OKX fills（limit=100）→ 开/平仓配对写入 trades.csv
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:TRADES_CSV = os.path.join(BASE_DIR, "trades.csv")
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:STATE_JSON = os.path.join(BASE_DIR, "state.json")
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:    eq_path = os.path.join(BASE_DIR, "strategy_eq.json")
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:    """state.json realized_legs → close_ord_id → equity_after。"""
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:    for leg in state.get("realized_legs") or []:
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:    """将回放后的 equity_after 写回 state.json realized_legs。"""
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:    for leg in state.get("realized_legs") or []:
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:        log(f"[equity] state.json 更新{updated}条 equity_after")
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:    """删除 reset 边界之前的 trades.csv 行（防止 00:10 cron 回填历史）。"""
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:        "数据源": "state_json_batch",
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:def collapse_burst_realized_legs(legs, entry_spread_min=5):
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:    """state.json realized_legs：按 OKX 同策略同开仓同平仓分钟合并。"""
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:    """对 trades.csv 已平仓行按 OKX 同策略平仓规则合并并重算权益金。"""
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:    log(f"[batch] trades.csv 合并{collapsed}笔，剩余已平仓{len(closed)}")
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:def dedup_trades_csv():
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:    if _bwr_skip_maintenance("dedup_trades_csv"):
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:    legs = state.get("realized_legs") or []
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:    filtered = dedupe_realized_legs(filtered)
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:    state["realized_legs"] = filtered
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:    log(f"[prune_inflated] realized_legs {before}→{after}（剔除 OKX回补）")
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:    """OKX 开平配对 → state.json realized_leg。"""
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:def filter_valid_realized_legs(
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:    legs = dedupe_realized_legs(legs or [])
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:                legs = dedupe_realized_legs(legs)
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:        collapsed, batch_n = collapse_burst_realized_legs(overlapped)
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:def merge_realized_legs_by_ord_id(existing_legs, incoming_legs):
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:def dedupe_realized_legs(legs):
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:    """state.json + trades.csv 已记账的平仓 ordId（防 FIFO 全量覆盖）。"""
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:            for leg in state.get("realized_legs") or []:
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:    """修正 realized_legs：入场价用开仓成交均价，盈亏用策略归因（修复 net_mode fillPnl 错位）。"""
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:    """以 position_*.json 为真源，同步 state.json 开仓 tranches。"""
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:            log("[state] 跳过多 tranche 持仓拆分，保留 state.json 明细")
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:        if not name.startswith("position_") or not name.endswith(".json"):
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:        sid = name.replace("position_", "").replace(".json", "")
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:    """用 state.json 完全重建 trades.csv（已平仓 + 当前 tranche 持仓中）。"""
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:    legs = dedupe_realized_legs(state.get("realized_legs") or [])
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:        state["realized_legs"] = legs
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:        log(f"[rebuild] OKX 同策略平仓合并 {leg_merged} 笔 realized_legs")
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:            "数据源": "state_json",
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:    log(f"[rebuild] trades.csv 自 state 重建: 已平仓{sum(1 for r in rows if r.get('状态')=='已平仓')} "
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:def fix_state_realized_legs(save=True, supplement_fifo=False, collapse_batch=False):
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:    """轻量修正 state.json realized_legs（去重 + 校验）；FIFO/批次合并需显式开启。"""
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:    raw = state.get("realized_legs") or []
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:    collapsed, stats = filter_valid_realized_legs(
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:    state["realized_legs"] = pre_reset + collapsed
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:    stats["after"] = len(state["realized_legs"])
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:def build_trades_csv(fills):
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:    """删除旧的持仓中残留行，仅保留 state.json 对应的真实 tranche 持仓。"""
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:        log(f"[open_rows] 清理{removed}条旧持仓中残留行，等待按 state.json 重建")
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:    """state.json realized_legs → trades.csv 行（fills 缺失时回补）。"""
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:        "数据源": "state_json_est" if est else "state_json",
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:    """state.json realized_legs，仅 reset 后的平仓腿（可选校验过滤）。"""
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:    legs = state.get("realized_legs") or []
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:        post_reset = dedupe_realized_legs(post_reset)
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:    if src == "state_json" and reason not in ("state归因", ""):
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:    if src.startswith("state_json") or reason == "state归因":
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:    """以 state.json realized_legs 为 bot 归因真源，修正 trades.csv 策略错位/缺失/幽灵持仓。"""
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:    # P0 2026-07-03: 「open ordId 出现在 realized_legs」不等于「该仓位已全平」——
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:    """OKX fills 查不到时，用 state.json realized_legs 回补已平仓（禁止重复 ordId）。"""
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:        log("[state] state.json 不存在，跳过已平仓回补")
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:    legs = state.get("realized_legs") or []
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:    eq_path = os.path.join(BASE_DIR, "strategy_eq.json")
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:    """单条 realized_leg 写入 trades.csv（去重）；供 main.py 平仓后立即调用。"""
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:def append_realized_legs(legs):
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:    eq_path = os.path.join(BASE_DIR, "strategy_eq.json")
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:    """把 bot 当前 tranche 同步为 trades.csv 中的「持仓中」行（供战报汇总显示）。"""
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:    eq_path = os.path.join(BASE_DIR, "strategy_eq.json")
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:        log("[持仓] state.json 不存在，跳过 tranche 持仓同步")
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:            "数据源": "state_json",
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:    """将校正后的 realized_leg 写回 state.json。"""
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:    path = STATE_JSON if base_dir is None else os.path.join(base_dir, "state.json")
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:    for i, existing in enumerate(state.get("realized_legs", [])):
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:            state["realized_legs"][i] = {**existing, **leg}
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:    """以 state.json 只读投影重建战报 xlsx（不改 open tranche；open 仅 bot 写入）。"""
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:        dedup_trades_csv()
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:    """定时战报：以 state.json + position 为真源，禁止全量 fills 重建（防幽灵成交膨胀）。"""
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:        bak_path = os.path.join(BASE_DIR, f"trades.csv.bak_{bak_ts}")
+./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:        dedup_trades_csv()
+./backups/P19_A2_8_20260710_085356/reconcile_all_from_okx.py:"""Reconcile all strategy position_*.json + state.json to match OKX net via LIFO open fills."""
+./backups/P19_A2_8_20260710_085356/reconcile_all_from_okx.py:    for name in ("state.json", "trades.csv"):
+./backups/P19_A2_8_20260710_085356/reconcile_all_from_okx.py:        pf = os.path.join(BASE, f"position_{sid}.json")
+./backups/P19_A2_8_20260710_085356/reconcile_all_from_okx.py:        for l in state_now.get("realized_legs", [])
+./backups/P19_A2_8_20260710_085356/reconcile_all_from_okx.py:            for existing in state.get("realized_legs", []):
+./backups/P19_A2_8_20260710_085356/reconcile_all_from_okx.py:    """写入 position_*.json（按策略汇总）+ state tranches（每笔归因一行）。"""
+./backups/P19_A2_8_20260710_085356/reconcile_all_from_okx.py:        tmp = os.path.join(BASE, f"position_{sid}.json.tmp")
+./backups/P19_A2_8_20260710_085356/reconcile_all_from_okx.py:        os.replace(tmp, os.path.join(BASE, f"position_{sid}.json"))
+./backups/P19_A2_8_20260710_085356/reconcile_all_from_okx.py:    """三层对齐时的安全维护：净化幽灵腿、投影 trades.csv，不改 open tranche。"""
+./backups/P19_A2_8_20260710_085356/reconcile_all_from_okx.py:    legs = state.get("realized_legs") or []
+./backups/P19_A2_8_20260710_085356/reconcile_all_from_okx.py:    deduped = b.dedupe_realized_legs(legs)
+./backups/P19_A2_8_20260710_085356/reconcile_all_from_okx.py:        state["realized_legs"] = deduped
+./backups/P19_A2_8_20260710_085356/reconcile_all_from_okx.py:        b.dedup_trades_csv()
+./backups/P19_A2_8_20260710_085356/reconcile_all_from_okx.py:    total_legs = len(state.get("realized_legs") or [])
+./backups/P19_A2_8_20260710_085356/reconcile_all_from_okx.py:        f"realized_legs 总数 {total_legs} | net {state.get('net_position')} | "
+./backups/P19_A2_8_20260710_085356/reconcile_all_from_okx.py:            path = os.path.join(BASE, f"position_{sid}.json")
+./backups/P19_A2_8_20260710_085356/reconcile_all_from_okx.py:    # 4) dedupe realized_legs by close_ord_id
+./backups/P19_A2_8_20260710_085356/reconcile_all_from_okx.py:    legs = state.get("realized_legs") or []
+./backups/P19_A2_8_20260710_085356/reconcile_all_from_okx.py:    deduped = b.dedupe_realized_legs(legs)
+./backups/P19_A2_8_20260710_085356/reconcile_all_from_okx.py:        state["realized_legs"] = deduped
+./backups/P19_A2_8_20260710_085356/reconcile_all_from_okx.py:    # 5) rebuild trades.csv
+./backups/P19_A2_8_20260710_085356/reconcile_all_from_okx.py:    b.dedup_trades_csv()
+./backups/P19_A2_8_20260710_085356/build_war_report.py:1) 拉 OKX fills（limit=100）→ 开/平仓配对写入 trades.csv
+./backups/P19_A2_8_20260710_085356/build_war_report.py:TRADES_CSV = os.path.join(BASE_DIR, "trades.csv")
+./backups/P19_A2_8_20260710_085356/build_war_report.py:STATE_JSON = os.path.join(BASE_DIR, "state.json")
+./backups/P19_A2_8_20260710_085356/build_war_report.py:    eq_path = os.path.join(BASE_DIR, "strategy_eq.json")
+./backups/P19_A2_8_20260710_085356/build_war_report.py:    """state.json realized_legs → close_ord_id → equity_after。"""
+./backups/P19_A2_8_20260710_085356/build_war_report.py:    for leg in state.get("realized_legs") or []:
+./backups/P19_A2_8_20260710_085356/build_war_report.py:    """将回放后的 equity_after 写回 state.json realized_legs。"""
+./backups/P19_A2_8_20260710_085356/build_war_report.py:    for leg in state.get("realized_legs") or []:
+./backups/P19_A2_8_20260710_085356/build_war_report.py:        log(f"[equity] state.json 更新{updated}条 equity_after")
+./backups/P19_A2_8_20260710_085356/build_war_report.py:    """删除 reset 边界之前的 trades.csv 行（防止 00:10 cron 回填历史）。"""
+./backups/P19_A2_8_20260710_085356/build_war_report.py:        "数据源": "state_json_batch",
+./backups/P19_A2_8_20260710_085356/build_war_report.py:def collapse_burst_realized_legs(legs, entry_spread_min=5):
+./backups/P19_A2_8_20260710_085356/build_war_report.py:    """state.json realized_legs：按 OKX 同策略同开仓同平仓分钟合并。"""
+./backups/P19_A2_8_20260710_085356/build_war_report.py:    """对 trades.csv 已平仓行按 OKX 同策略平仓规则合并并重算权益金。"""
+./backups/P19_A2_8_20260710_085356/build_war_report.py:    log(f"[batch] trades.csv 合并{collapsed}笔，剩余已平仓{len(closed)}")
+./backups/P19_A2_8_20260710_085356/build_war_report.py:def dedup_trades_csv():
+./backups/P19_A2_8_20260710_085356/build_war_report.py:    if _bwr_skip_maintenance("dedup_trades_csv"):
+./backups/P19_A2_8_20260710_085356/build_war_report.py:    legs = state.get("realized_legs") or []
+./backups/P19_A2_8_20260710_085356/build_war_report.py:    filtered = dedupe_realized_legs(filtered)
+./backups/P19_A2_8_20260710_085356/build_war_report.py:    state["realized_legs"] = filtered
+./backups/P19_A2_8_20260710_085356/build_war_report.py:    log(f"[prune_inflated] realized_legs {before}→{after}（剔除 OKX回补）")
+./backups/P19_A2_8_20260710_085356/build_war_report.py:    """OKX 开平配对 → state.json realized_leg。"""
+./backups/P19_A2_8_20260710_085356/build_war_report.py:def filter_valid_realized_legs(
+./backups/P19_A2_8_20260710_085356/build_war_report.py:    legs = dedupe_realized_legs(legs or [])
+./backups/P19_A2_8_20260710_085356/build_war_report.py:                legs = dedupe_realized_legs(legs)
+./backups/P19_A2_8_20260710_085356/build_war_report.py:        collapsed, batch_n = collapse_burst_realized_legs(overlapped)
+./backups/P19_A2_8_20260710_085356/build_war_report.py:def merge_realized_legs_by_ord_id(existing_legs, incoming_legs):
+./backups/P19_A2_8_20260710_085356/build_war_report.py:def dedupe_realized_legs(legs):
+./backups/P19_A2_8_20260710_085356/build_war_report.py:    """state.json + trades.csv 已记账的平仓 ordId（防 FIFO 全量覆盖）。"""
+./backups/P19_A2_8_20260710_085356/build_war_report.py:            for leg in state.get("realized_legs") or []:
+./backups/P19_A2_8_20260710_085356/build_war_report.py:    """修正 realized_legs：入场价用开仓成交均价，盈亏用策略归因（修复 net_mode fillPnl 错位）。"""
+./backups/P19_A2_8_20260710_085356/build_war_report.py:    """以 position_*.json 为真源，同步 state.json 开仓 tranches。"""
+./backups/P19_A2_8_20260710_085356/build_war_report.py:            log("[state] 跳过多 tranche 持仓拆分，保留 state.json 明细")
+./backups/P19_A2_8_20260710_085356/build_war_report.py:        if not name.startswith("position_") or not name.endswith(".json"):
+./backups/P19_A2_8_20260710_085356/build_war_report.py:        sid = name.replace("position_", "").replace(".json", "")
+./backups/P19_A2_8_20260710_085356/build_war_report.py:    """用 state.json 完全重建 trades.csv（已平仓 + 当前 tranche 持仓中）。"""
+./backups/P19_A2_8_20260710_085356/build_war_report.py:    legs = dedupe_realized_legs(state.get("realized_legs") or [])
+./backups/P19_A2_8_20260710_085356/build_war_report.py:        state["realized_legs"] = legs
+./backups/P19_A2_8_20260710_085356/build_war_report.py:        log(f"[rebuild] OKX 同策略平仓合并 {leg_merged} 笔 realized_legs")
+./backups/P19_A2_8_20260710_085356/build_war_report.py:            "数据源": "state_json",
+./backups/P19_A2_8_20260710_085356/build_war_report.py:    log(f"[rebuild] trades.csv 自 state 重建: 已平仓{sum(1 for r in rows if r.get('状态')=='已平仓')} "
+./backups/P19_A2_8_20260710_085356/build_war_report.py:def fix_state_realized_legs(save=True, supplement_fifo=False, collapse_batch=False):
+./backups/P19_A2_8_20260710_085356/build_war_report.py:    """轻量修正 state.json realized_legs（去重 + 校验）；FIFO/批次合并需显式开启。"""
+./backups/P19_A2_8_20260710_085356/build_war_report.py:    raw = state.get("realized_legs") or []
+./backups/P19_A2_8_20260710_085356/build_war_report.py:    collapsed, stats = filter_valid_realized_legs(
+./backups/P19_A2_8_20260710_085356/build_war_report.py:    state["realized_legs"] = pre_reset + collapsed
+./backups/P19_A2_8_20260710_085356/build_war_report.py:    stats["after"] = len(state["realized_legs"])
+./backups/P19_A2_8_20260710_085356/build_war_report.py:def build_trades_csv(fills):
+./backups/P19_A2_8_20260710_085356/build_war_report.py:    """删除旧的持仓中残留行，仅保留 state.json 对应的真实 tranche 持仓。"""
+./backups/P19_A2_8_20260710_085356/build_war_report.py:        log(f"[open_rows] 清理{removed}条旧持仓中残留行，等待按 state.json 重建")
+./backups/P19_A2_8_20260710_085356/build_war_report.py:    """state.json realized_legs → trades.csv 行（fills 缺失时回补）。"""
+./backups/P19_A2_8_20260710_085356/build_war_report.py:        "数据源": "state_json_est" if est else "state_json",
+./backups/P19_A2_8_20260710_085356/build_war_report.py:    """state.json realized_legs，仅 reset 后的平仓腿（可选校验过滤）。"""
+./backups/P19_A2_8_20260710_085356/build_war_report.py:    legs = state.get("realized_legs") or []
+./backups/P19_A2_8_20260710_085356/build_war_report.py:        post_reset = dedupe_realized_legs(post_reset)
+./backups/P19_A2_8_20260710_085356/build_war_report.py:    if src == "state_json" and reason not in ("state归因", ""):
+./backups/P19_A2_8_20260710_085356/build_war_report.py:    if src.startswith("state_json") or reason == "state归因":
+./backups/P19_A2_8_20260710_085356/build_war_report.py:    """以 state.json realized_legs 为 bot 归因真源，修正 trades.csv 策略错位/缺失/幽灵持仓。"""
+./backups/P19_A2_8_20260710_085356/build_war_report.py:    # P0 2026-07-03: 「open ordId 出现在 realized_legs」不等于「该仓位已全平」——
+./backups/P19_A2_8_20260710_085356/build_war_report.py:    """OKX fills 查不到时，用 state.json realized_legs 回补已平仓（禁止重复 ordId）。"""
+./backups/P19_A2_8_20260710_085356/build_war_report.py:        log("[state] state.json 不存在，跳过已平仓回补")
+./backups/P19_A2_8_20260710_085356/build_war_report.py:    legs = state.get("realized_legs") or []
+./backups/P19_A2_8_20260710_085356/build_war_report.py:    eq_path = os.path.join(BASE_DIR, "strategy_eq.json")
+./backups/P19_A2_8_20260710_085356/build_war_report.py:    """单条 realized_leg 写入 trades.csv（去重）；供 main.py 平仓后立即调用。"""
+./backups/P19_A2_8_20260710_085356/build_war_report.py:def append_realized_legs(legs):
+./backups/P19_A2_8_20260710_085356/build_war_report.py:    eq_path = os.path.join(BASE_DIR, "strategy_eq.json")
+./backups/P19_A2_8_20260710_085356/build_war_report.py:    """把 bot 当前 tranche 同步为 trades.csv 中的「持仓中」行（供战报汇总显示）。"""
+./backups/P19_A2_8_20260710_085356/build_war_report.py:    eq_path = os.path.join(BASE_DIR, "strategy_eq.json")
+./backups/P19_A2_8_20260710_085356/build_war_report.py:        log("[持仓] state.json 不存在，跳过 tranche 持仓同步")
+./backups/P19_A2_8_20260710_085356/build_war_report.py:            "数据源": "state_json",
+./backups/P19_A2_8_20260710_085356/build_war_report.py:    """将校正后的 realized_leg 写回 state.json。"""
+./backups/P19_A2_8_20260710_085356/build_war_report.py:    path = STATE_JSON if base_dir is None else os.path.join(base_dir, "state.json")
+./backups/P19_A2_8_20260710_085356/build_war_report.py:    for i, existing in enumerate(state.get("realized_legs", [])):
+./backups/P19_A2_8_20260710_085356/build_war_report.py:            state["realized_legs"][i] = {**existing, **leg}
+./backups/P19_A2_8_20260710_085356/build_war_report.py:    """以 state.json 只读投影重建战报 xlsx（不改 open tranche；open 仅 bot 写入）。"""
+./backups/P19_A2_8_20260710_085356/build_war_report.py:        dedup_trades_csv()
+./backups/P19_A2_8_20260710_085356/build_war_report.py:    """定时战报：以 state.json + position 为真源，禁止全量 fills 重建（防幽灵成交膨胀）。"""
+./backups/P19_A2_8_20260710_085356/build_war_report.py:            bak_path = os.path.join(BASE_DIR, f"trades.csv.bak_{bak_ts}")
+./backups/P19_A2_8_20260710_085356/build_war_report.py:        print("[BWR_MODE] readonly skip trades.csv backup")
+./backups/P19_A2_8_20260710_085356/build_war_report.py:        dedup_trades_csv()
+./backups/P19_FINAL_BASELINE_20260710_113816/state_maintenance_worker.py:    b.TRADES_CSV = os.path.join(base_dir, "trades.csv")
+./backups/P19_FINAL_BASELINE_20260710_113816/state_maintenance_worker.py:    b.STATE_JSON = os.path.join(base_dir, "state.json")
+./backups/P19_FINAL_BASELINE_20260710_113816/state_maintenance_worker.py:def _backup_state(base_dir: str, label: str = "state.json.bak") -> str | None:
+./backups/P19_FINAL_BASELINE_20260710_113816/state_maintenance_worker.py:    state_path = os.path.join(base_dir, "state.json")
+./backups/P19_FINAL_BASELINE_20260710_113816/state_maintenance_worker.py:    state_path = os.path.join(base_dir, "state.json")
+./backups/P19_FINAL_BASELINE_20260710_113816/state_maintenance_worker.py:        state["realized_legs"] = filtered
+./backups/P19_FINAL_BASELINE_20260710_113816/state_maintenance_worker.py:        legs = state.get("realized_legs") or []
+./backups/P19_FINAL_BASELINE_20260710_113816/state_maintenance_worker.py:        deduped = b.dedupe_realized_legs(legs)
+./backups/P19_FINAL_BASELINE_20260710_113816/state_maintenance_worker.py:                state["realized_legs"] = deduped
+./backups/P19_FINAL_BASELINE_20260710_113816/state_maintenance_worker.py:    state_path = os.path.join(base_dir, "state.json")
+./backups/P19_FINAL_BASELINE_20260710_113816/state_maintenance_worker.py:            n = len(state.get("realized_legs") or []) + len(state.get("tranches") or [])
+./backups/P19_FINAL_BASELINE_20260710_113816/state_maintenance_worker.py:            b.dedup_trades_csv()
+./backups/P19_FINAL_BASELINE_20260710_113816/state_maintenance_worker.py:    state_path = os.path.join(base_dir, "state.json")
+./backups/P19_FINAL_BASELINE_20260710_113816/state_maintenance_worker.py:        for leg in state.get("realized_legs") or []
+./backups/P19_FINAL_BASELINE_20260710_113816/state_maintenance_worker.py:            trades_path = os.path.join(base_dir, "trades.csv")
+./backups/P19_FINAL_BASELINE_20260710_113816/reconcile_all_from_okx.py:"""Reconcile all strategy position_*.json + state.json to match OKX net via LIFO open fills."""
+./backups/P19_FINAL_BASELINE_20260710_113816/reconcile_all_from_okx.py:    for name in ("state.json", "trades.csv"):
+./backups/P19_FINAL_BASELINE_20260710_113816/reconcile_all_from_okx.py:        pf = os.path.join(BASE, f"position_{sid}.json")
+./backups/P19_FINAL_BASELINE_20260710_113816/reconcile_all_from_okx.py:        for l in state_now.get("realized_legs", [])
+./backups/P19_FINAL_BASELINE_20260710_113816/reconcile_all_from_okx.py:            for existing in state.get("realized_legs", []):
+./backups/P19_FINAL_BASELINE_20260710_113816/reconcile_all_from_okx.py:    """写入 position_*.json（按策略汇总）+ state tranches（每笔归因一行）。"""
+./backups/P19_FINAL_BASELINE_20260710_113816/reconcile_all_from_okx.py:        tmp = os.path.join(BASE, f"position_{sid}.json.tmp")
+./backups/P19_FINAL_BASELINE_20260710_113816/reconcile_all_from_okx.py:        os.replace(tmp, os.path.join(BASE, f"position_{sid}.json"))
+./backups/P19_FINAL_BASELINE_20260710_113816/reconcile_all_from_okx.py:    total_legs = len(state.get("realized_legs") or [])
+./backups/P19_FINAL_BASELINE_20260710_113816/reconcile_all_from_okx.py:        f"realized_legs 总数 {total_legs} | net {state.get('net_position')} | "
+./backups/P19_FINAL_BASELINE_20260710_113816/reconcile_all_from_okx.py:            path = os.path.join(BASE, f"position_{sid}.json")
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:1) 拉 OKX fills（limit=100）→ 开/平仓配对写入 trades.csv
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:TRADES_CSV = os.path.join(BASE_DIR, "trades.csv")
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:STATE_JSON = os.path.join(BASE_DIR, "state.json")
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:    eq_path = os.path.join(BASE_DIR, "strategy_eq.json")
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:    """state.json realized_legs → close_ord_id → equity_after。"""
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:    for leg in state.get("realized_legs") or []:
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:    """将回放后的 equity_after 写回 state.json realized_legs。"""
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:    for leg in state.get("realized_legs") or []:
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:        log(f"[equity] state.json 更新{updated}条 equity_after")
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:    """删除 reset 边界之前的 trades.csv 行（防止 00:10 cron 回填历史）。"""
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:        "数据源": "state_json_batch",
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:def collapse_burst_realized_legs(legs, entry_spread_min=5):
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:    """state.json realized_legs：按 OKX 同策略同开仓同平仓分钟合并。"""
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:    """对 trades.csv 已平仓行按 OKX 同策略平仓规则合并并重算权益金。"""
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:    log(f"[batch] trades.csv 合并{collapsed}笔，剩余已平仓{len(closed)}")
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:def dedup_trades_csv():
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:    if _bwr_skip_maintenance("dedup_trades_csv"):
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:    legs = state.get("realized_legs") or []
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:    filtered = dedupe_realized_legs(filtered)
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:    state["realized_legs"] = filtered
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:    log(f"[prune_inflated] realized_legs {before}→{after}（剔除 OKX回补）")
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:    """OKX 开平配对 → state.json realized_leg。"""
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:def filter_valid_realized_legs(
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:    legs = dedupe_realized_legs(legs or [])
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:                legs = dedupe_realized_legs(legs)
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:        collapsed, batch_n = collapse_burst_realized_legs(overlapped)
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:def merge_realized_legs_by_ord_id(existing_legs, incoming_legs):
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:def dedupe_realized_legs(legs):
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:    """state.json + trades.csv 已记账的平仓 ordId（防 FIFO 全量覆盖）。"""
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:            for leg in state.get("realized_legs") or []:
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:    """修正 realized_legs：入场价用开仓成交均价，盈亏用策略归因（修复 net_mode fillPnl 错位）。"""
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:    """以 position_*.json 为真源，同步 state.json 开仓 tranches。"""
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:            log("[state] 跳过多 tranche 持仓拆分，保留 state.json 明细")
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:        if not name.startswith("position_") or not name.endswith(".json"):
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:        sid = name.replace("position_", "").replace(".json", "")
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:    """用 state.json 完全重建 trades.csv（已平仓 + 当前 tranche 持仓中）。"""
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:    legs = dedupe_realized_legs(state.get("realized_legs") or [])
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:        state["realized_legs"] = legs
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:        log(f"[rebuild] OKX 同策略平仓合并 {leg_merged} 笔 realized_legs")
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:            "数据源": "state_json",
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:    log(f"[rebuild] trades.csv 自 state 重建: 已平仓{sum(1 for r in rows if r.get('状态')=='已平仓')} "
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:def fix_state_realized_legs(save=True, supplement_fifo=False, collapse_batch=False):
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:    """轻量修正 state.json realized_legs（去重 + 校验）；FIFO/批次合并需显式开启。"""
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:    raw = state.get("realized_legs") or []
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:    collapsed, stats = filter_valid_realized_legs(
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:    state["realized_legs"] = pre_reset + collapsed
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:    stats["after"] = len(state["realized_legs"])
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:def build_trades_csv(fills):
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:    """删除旧的持仓中残留行，仅保留 state.json 对应的真实 tranche 持仓。"""
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:        log(f"[open_rows] 清理{removed}条旧持仓中残留行，等待按 state.json 重建")
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:    """state.json realized_legs → trades.csv 行（fills 缺失时回补）。"""
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:        "数据源": "state_json_est" if est else "state_json",
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:    """state.json realized_legs，仅 reset 后的平仓腿（可选校验过滤）。"""
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:    legs = state.get("realized_legs") or []
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:        post_reset = dedupe_realized_legs(post_reset)
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:    if src == "state_json" and reason not in ("state归因", ""):
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:    if src.startswith("state_json") or reason == "state归因":
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:    """以 state.json realized_legs 为 bot 归因真源，修正 trades.csv 策略错位/缺失/幽灵持仓。"""
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:    # P0 2026-07-03: 「open ordId 出现在 realized_legs」不等于「该仓位已全平」——
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:    """OKX fills 查不到时，用 state.json realized_legs 回补已平仓（禁止重复 ordId）。"""
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:        log("[state] state.json 不存在，跳过已平仓回补")
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:    legs = state.get("realized_legs") or []
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:    eq_path = os.path.join(BASE_DIR, "strategy_eq.json")
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:    """单条 realized_leg 写入 trades.csv（去重）；供 main.py 平仓后立即调用。"""
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:def append_realized_legs(legs):
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:    eq_path = os.path.join(BASE_DIR, "strategy_eq.json")
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:    """把 bot 当前 tranche 同步为 trades.csv 中的「持仓中」行（供战报汇总显示）。"""
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:    eq_path = os.path.join(BASE_DIR, "strategy_eq.json")
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:        log("[持仓] state.json 不存在，跳过 tranche 持仓同步")
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:            "数据源": "state_json",
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:    """将校正后的 realized_leg 写回 state.json。"""
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:    path = STATE_JSON if base_dir is None else os.path.join(base_dir, "state.json")
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:    for i, existing in enumerate(state.get("realized_legs", [])):
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:            state["realized_legs"][i] = {**existing, **leg}
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:    """以 state.json 只读投影重建战报 xlsx（不改 open tranche；open 仅 bot 写入）。"""
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:        dedup_trades_csv()
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:    """定时战报：以 state.json + position 为真源，禁止全量 fills 重建（防幽灵成交膨胀）。"""
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:        bak_path = os.path.join(BASE_DIR, f"trades.csv.bak_{bak_ts}")
+./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:        dedup_trades_csv()
+./p19_2b_sync/reconcile_all_from_okx.py:"""Reconcile all strategy position_*.json + state.json to match OKX net via LIFO open fills."""
+./p19_2b_sync/reconcile_all_from_okx.py:    for name in ("state.json", "trades.csv"):
+./p19_2b_sync/reconcile_all_from_okx.py:        pf = os.path.join(BASE, f"position_{sid}.json")
+./p19_2b_sync/reconcile_all_from_okx.py:        for l in state_now.get("realized_legs", [])
+./p19_2b_sync/reconcile_all_from_okx.py:            for existing in state.get("realized_legs", []):
+./p19_2b_sync/reconcile_all_from_okx.py:    """写入 position_*.json（按策略汇总）+ state tranches（每笔归因一行）。"""
+./p19_2b_sync/reconcile_all_from_okx.py:        tmp = os.path.join(BASE, f"position_{sid}.json.tmp")
+./p19_2b_sync/reconcile_all_from_okx.py:        os.replace(tmp, os.path.join(BASE, f"position_{sid}.json"))
+./p19_2b_sync/reconcile_all_from_okx.py:    legs = state.get("realized_legs") or []
+./p19_2b_sync/reconcile_all_from_okx.py:    deduped = b.dedupe_realized_legs(legs)
+./p19_2b_sync/reconcile_all_from_okx.py:    legs = state.get("realized_legs") or []
+./p19_2b_sync/reconcile_all_from_okx.py:    deduped = b.dedupe_realized_legs(legs)
+./p19_2b_sync/reconcile_all_from_okx.py:        state["realized_legs"] = deduped
+./p19_2b_sync/reconcile_all_from_okx.py:        b.dedup_trades_csv()
+./p19_2b_sync/reconcile_all_from_okx.py:    total_legs = len(state.get("realized_legs") or [])
+./p19_2b_sync/reconcile_all_from_okx.py:        f"realized_legs 总数 {total_legs} | net {state.get('net_position')} | "
+./p19_2b_sync/reconcile_all_from_okx.py:            path = os.path.join(BASE, f"position_{sid}.json")
+./p19_2b_sync/reconcile_all_from_okx.py:    # 4) dedupe realized_legs by close_ord_id
+./p19_2b_sync/reconcile_all_from_okx.py:    legs = state.get("realized_legs") or []
+./p19_2b_sync/reconcile_all_from_okx.py:    deduped = b.dedupe_realized_legs(legs)
+./p19_2b_sync/reconcile_all_from_okx.py:        state["realized_legs"] = deduped
+./p19_2b_sync/reconcile_all_from_okx.py:    # 5) rebuild trades.csv
+./p19_2b_sync/reconcile_all_from_okx.py:    b.dedup_trades_csv()
+./main.py:EQ_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "strategy_eq.json")
+./main.py:        # 等当前循环写完 trades.csv / state 再启动子进程
+./main.py:def pf(sid): return f"position_{sid}.json"
+./main.py:    """cron/手工对账改写了 position_*.json 时，内存 tracker 须与磁盘一致（防心跳标签残留）。"""
+./main.py:    【唯一交易记录入口】订单成交后调用，从OKX fills拉真实数据写入trades.csv
+./main.py:        logger.error(f"[log_trade_after_fill] {strategy_id} ordId={ord_id} fills不可用，跳过写入trades.csv")
+./main.py:    wins_fn = "/home/admin/okx_bot/trades.csv"
+./main.py:# 启动同步：本地 position_*.json 优先；仅当本地全无持仓时才把 OKX net 仓归到首个空闲策略
+./venv/lib/python3.12/site-packages/setuptools/msvc.py:                # Get VS installation path from "state.json" file
+./venv/lib/python3.12/site-packages/setuptools/msvc.py:                state_path = os.path.join(instances_dir, name, 'state.json')
+./venv/lib/python3.12/site-packages/setuptools/msvc.py:                # Skip if "state.json" file is missing or bad format
+./venv/lib64/python3.12/site-packages/setuptools/msvc.py:                # Get VS installation path from "state.json" file
+./venv/lib64/python3.12/site-packages/setuptools/msvc.py:                state_path = os.path.join(instances_dir, name, 'state.json')
+./venv/lib64/python3.12/site-packages/setuptools/msvc.py:                # Skip if "state.json" file is missing or bad format
+./scripts/analyze_trades_pnl.py:"""One-shot trades.csv PnL distribution (run on VPS or Mac mirror)."""
+./scripts/analyze_trades_pnl.py:    path = BASE / "trades.csv"
+./scripts/analyze_trades_pnl.py:    print(f"trades.csv @ {path}")
+./scripts/analyze_trades_pnl.py:    eq_path = BASE / "strategy_eq.json"
+./scripts/govern_state_legs.py:"""治理 state.json realized_legs：剔除 OKX回补 膨胀腿，保留 bot 可信归因。"""
+./scripts/govern_state_legs.py:STATE_JSON = os.path.join(BASE, "state.json")
+./scripts/govern_state_legs.py:    legs = state.get("realized_legs") or []
+./scripts/govern_state_legs.py:    kept = b.dedupe_realized_legs(kept)
+./scripts/govern_state_legs.py:    state["realized_legs"] = kept
+./scripts/govern_state_legs.py:    existing = state.get("realized_legs") or []
+./scripts/govern_state_legs.py:    merged, stats = b.merge_realized_legs_by_ord_id(existing, candidates)
+./scripts/govern_state_legs.py:    state["realized_legs"] = b.dedupe_realized_legs(merged)
+./scripts/govern_state_legs.py:    b.log(f"[catchup] added={stats.get('added', 0)} total={len(state['realized_legs'])}")
+./scripts/trade_review.py:基于 trades.csv 数据，结合 strategies.py 逻辑做交易级复盘。
+./scripts/trade_review.py:TRADES_CSV = os.path.join(BASE, "trades.csv")
+./scripts/trade_review.py:    """对一行trades.csv记录评分"""
+./scripts/state_maintenance_worker.py:    b.TRADES_CSV = os.path.join(base_dir, "trades.csv")
+./scripts/state_maintenance_worker.py:    b.STATE_JSON = os.path.join(base_dir, "state.json")
+./scripts/state_maintenance_worker.py:def _backup_state(base_dir: str, label: str = "state.json.bak") -> str | None:
+./scripts/state_maintenance_worker.py:    state_path = os.path.join(base_dir, "state.json")
+./scripts/state_maintenance_worker.py:    state_path = os.path.join(base_dir, "state.json")
+./scripts/state_maintenance_worker.py:        state["realized_legs"] = filtered
+./scripts/state_maintenance_worker.py:        legs = state.get("realized_legs") or []
+./scripts/state_maintenance_worker.py:        deduped = b.dedupe_realized_legs(legs)
+./scripts/state_maintenance_worker.py:                state["realized_legs"] = deduped
+./scripts/state_maintenance_worker.py:    state_path = os.path.join(base_dir, "state.json")
+./scripts/state_maintenance_worker.py:            n = len(state.get("realized_legs") or []) + len(state.get("tranches") or [])
+./scripts/state_maintenance_worker.py:            b.dedup_trades_csv()
+./scripts/state_maintenance_worker.py:    state_path = os.path.join(base_dir, "state.json")
+./scripts/state_maintenance_worker.py:        for leg in state.get("realized_legs") or []
+./scripts/state_maintenance_worker.py:            trades_path = os.path.join(base_dir, "trades.csv")
+./scripts/prune_old_realized_legs.py:"""每日瘦身 state.json realized_legs：仅保留最近 N 天（默认 40，允许 30–45）。"""
+./scripts/prune_old_realized_legs.py:STATE_JSON = os.path.join(BASE, "state.json")
+./scripts/prune_old_realized_legs.py:def prune_old_realized_legs(
+./scripts/prune_old_realized_legs.py:    legs = state.get("realized_legs") or []
+./scripts/prune_old_realized_legs.py:    kept = b.dedupe_realized_legs(kept)
+./scripts/prune_old_realized_legs.py:    state["realized_legs"] = kept
+./scripts/prune_old_realized_legs.py:    ap.add_argument("--refresh-war", action="store_true", help="瘦身後重建 trades.csv 并刷新战报")
+./scripts/prune_old_realized_legs.py:    print(prune_old_realized_legs(keep_days=args.days, dry_run=args.dry_run, refresh_war=args.refresh_war))
+./scripts/audit_open_ord_fills.py:"""只读：全策略 realized_legs / tranches 的 open_ord_id、close_ord_id 与 OKX fills 逐笔核对。"""
+./scripts/audit_open_ord_fills.py:    state = json.load(open(os.path.join(BASE, "state.json"), encoding="utf-8"))
+./scripts/audit_open_ord_fills.py:        for l in state.get("realized_legs", [])
+./scripts/generate_portfolio_report.py:    eq = _load_json("strategy_eq.json")
+./scripts/generate_portfolio_report.py:    state = _load_json("state.json")
+./scripts/run_simulated_live.py:EQ_FILE = os.path.join(BOT_DIR, "strategy_eq.json")
+./scripts/run_simulated_live.py:def pf(sid): return os.path.join(BOT_DIR, f"position_{sid}.json")
+./scripts/generate_dashboard_v2.py:            pos_file = os.path.join(BOT_DIR, f"position_{sid}.json")
+./scripts/generate_dashboard_v2.py:    strategy_eq = _load_json("strategy_eq.json")
+./scripts/health_snapshot.py:    """心跳标签与 position_*.json 不一致的策略（内存未重载时的残留）。"""
+./scripts/health_snapshot.py:        path = BASE_DIR / f"position_{sid}.json"
+./scripts/health_snapshot.py:    path = BASE_DIR / "state.json"
+./scripts/health_snapshot.py:    eq_path = BASE_DIR / "strategy_eq.json"
+./scripts/okx_net_alignment.py:    """从 state.json 读取净持仓张数（多为正、空为负）。"""
+./scripts/okx_net_alignment.py:    path = os.path.join(base, "state.json")
+./scripts/okx_net_alignment.py:    """position_*.json 折算净张数。"""
+./scripts/okx_net_alignment.py:        path = os.path.join(base, f"position_{sid}.json")
+./scripts/okx_net_alignment.py:    """state.json tranches 分别折算多/空腿张数。"""
+./scripts/okx_net_alignment.py:    path = os.path.join(base, "state.json")
+./scripts/okx_net_alignment.py:    """position_*.json 分别折算多/空腿张数。"""
+./scripts/okx_net_alignment.py:        path = os.path.join(base, f"position_{sid}.json")
+./scripts/okx_net_alignment.py:    path = os.path.join(base, "state.json")
+./scripts/okx_net_alignment.py:    """position_*.json 开仓策略映射。"""
+./scripts/okx_net_alignment.py:        path = os.path.join(base, f"position_{sid}.json")
+./scripts/manage_baseline.py:    eq_file = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "strategy_eq.json")
+./scripts/weekly_eq_adjust.py:EQ_FILE = os.path.join(BASE, "strategy_eq.json")
+./scripts/weekly_eq_adjust.py:TRADES_CSV = os.path.join(BASE, "trades.csv")
+./scripts/drain_pending_close_legs.py:        for leg in state.get("realized_legs", [])
+./scripts/generate_ranking.py:    eqs = load_json("strategy_eq.json")
+./scripts/reconcile_all_from_okx.py:"""Reconcile all strategy position_*.json + state.json to match OKX net via LIFO open fills."""
+./scripts/reconcile_all_from_okx.py:    for name in ("state.json", "trades.csv"):
+./scripts/reconcile_all_from_okx.py:        pf = os.path.join(BASE, f"position_{sid}.json")
+./scripts/reconcile_all_from_okx.py:        for l in state_now.get("realized_legs", [])
+./scripts/reconcile_all_from_okx.py:            for existing in state.get("realized_legs", []):
+./scripts/reconcile_all_from_okx.py:    """写入 position_*.json（按策略汇总）+ state tranches（每笔归因一行）。"""
+./scripts/reconcile_all_from_okx.py:        tmp = os.path.join(BASE, f"position_{sid}.json.tmp")
+./scripts/reconcile_all_from_okx.py:        os.replace(tmp, os.path.join(BASE, f"position_{sid}.json"))
+./scripts/reconcile_all_from_okx.py:    total_legs = len(state.get("realized_legs") or [])
+./scripts/reconcile_all_from_okx.py:        f"realized_legs 总数 {total_legs} | net {state.get('net_position')} | "
+./scripts/reconcile_all_from_okx.py:            path = os.path.join(BASE, f"position_{sid}.json")
+./scripts/archive/one_shot/repair_021_missing_close.py:    for name in ("state.json", "trades.csv"):
+./scripts/archive/one_shot/repair_021_missing_close.py:    legs = list(state.get("realized_legs") or [])
+./scripts/archive/one_shot/repair_021_missing_close.py:                state["realized_legs"] = legs
+./scripts/archive/one_shot/repair_021_missing_close.py:    state["realized_legs"] = legs
+./scripts/archive/check_current.py:s = json.load(open("/home/admin/okx_bot/state.json"))
+./scripts/archive/check_current.py:for l in s.get("realized_legs", []):
+./scripts/archive/check_current.py:print("\n=== position_013.json ===")
+./scripts/archive/check_current.py:print(open("/home/admin/okx_bot/position_013.json").read())
+./scripts/archive/check_current.py:print("=== position_003.json ===")
+./scripts/archive/check_current.py:print(open("/home/admin/okx_bot/position_003.json").read())
+./scripts/archive/check_current.py:print("=== position_006.json ===")
+./scripts/archive/check_current.py:print(open("/home/admin/okx_bot/position_006.json").read())
+./scripts/reconcile_equity.py:  2. 读取 strategy_eq.json
+./scripts/pure_reset_for_test.py:    "realized_legs": [],
+./scripts/pure_reset_for_test.py:        "state.json", "trades.csv", "strategy_eq.json", "cooldown.json",
+./scripts/pure_reset_for_test.py:        pf = os.path.join(BASE, f"position_{sid}.json")
+./scripts/pure_reset_for_test.py:            shutil.copy2(pf, os.path.join(dest, f"position_{sid}.json"))
+./scripts/pure_reset_for_test.py:    trades = os.path.join(BASE, "trades.csv")
+./scripts/pure_reset_for_test.py:    print(f"OK: trades.csv -> trades_archive.csv")
+./scripts/pure_reset_for_test.py:        path = os.path.join(BASE, f"position_{sid}.json")
+./scripts/pure_reset_for_test.py:    with open(os.path.join(BASE, "state.json"), "w", encoding="utf-8") as fp:
+./scripts/pure_reset_for_test.py:    with open(os.path.join(BASE, "strategy_eq.json"), "w", encoding="utf-8") as fp:
+./scripts/pure_reset_for_test.py:    with open(os.path.join(BASE, "trades.csv"), "w", encoding="utf-8") as fp:
+./scripts/pure_reset_for_test.py:    state = json.load(open(os.path.join(BASE, "state.json"), encoding="utf-8"))
+./scripts/pure_reset_for_test.py:    print(f"STATE | legs={len(state.get('realized_legs', []))} tranches={len(state.get('tranches', []))}")
+./scripts/backfill_missing_legs.py:"""按 close_ord_id 安全回补 state.json 缺失平仓腿（禁止 OKX回补 / size-FIFO 膨胀）。"""
+./scripts/backfill_missing_legs.py:STATE_JSON = os.path.join(BASE, "state.json")
+./scripts/backfill_missing_legs.py:        for leg in state.get("realized_legs") or []
+./scripts/backfill_missing_legs.py:    existing = state.get("realized_legs") or []
+./scripts/backfill_missing_legs.py:    merged, stats = b.merge_realized_legs_by_ord_id(existing, candidates)
+./scripts/backfill_missing_legs.py:    state["realized_legs"] = b.dedupe_realized_legs(merged)
+./scripts/backfill_missing_legs.py:    total = len(state["realized_legs"])
+./scripts/backfill_missing_legs.py:    legs = state.get("realized_legs") or []
+./scripts/backfill_missing_legs.py:        print("SELF_TEST SKIP: no realized_legs")
+./scripts/backfill_missing_legs.py:    state["realized_legs"] = [
+./scripts/backfill_missing_legs.py:        for leg in after.get("realized_legs") or []
+./scripts/consistency_audit.py:eq_file = os.path.join(bot_dir, "strategy_eq.json")
+./scripts/consistency_audit.py:# 读 realized_pnl (从 state.json realized_legs 汇总)
+./scripts/consistency_audit.py:state_file = os.path.join(bot_dir, "state.json")
+./scripts/consistency_audit.py:    for leg in state.get("realized_legs", []):
+./scripts/report_fills_window_legs.py:    state = json.load(open(os.path.join(BASE, "state.json"), encoding="utf-8"))
+./scripts/report_fills_window_legs.py:    legs = state.get("realized_legs") or []
+./scripts/load_legacy_trades.py:load_legacy_trades.py — 从state.json加载历史成交到performance
+./scripts/load_legacy_trades.py:# 读state.json
+./scripts/load_legacy_trades.py:state_file = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "state.json")
+./scripts/load_legacy_trades.py:    print("state.json 不存在")
+./scripts/load_legacy_trades.py:realized_legs = state.get("realized_legs", [])
+./scripts/load_legacy_trades.py:print(f"从state.json加载 {len(realized_legs)} 条历史成交")
+./scripts/load_legacy_trades.py:perf.record_from_state(realized_legs)
+./scripts/build_war_report.py:1) 拉 OKX fills（limit=100）→ 开/平仓配对写入 trades.csv
+./scripts/build_war_report.py:TRADES_CSV = os.path.join(BASE_DIR, "trades.csv")
+./scripts/build_war_report.py:STATE_JSON = os.path.join(BASE_DIR, "state.json")
+./scripts/build_war_report.py:    eq_path = os.path.join(BASE_DIR, "strategy_eq.json")
+./scripts/build_war_report.py:    """state.json realized_legs → close_ord_id → equity_after。"""
+./scripts/build_war_report.py:    for leg in state.get("realized_legs") or []:
+./scripts/build_war_report.py:    """将回放后的 equity_after 写回 state.json realized_legs。"""
+./scripts/build_war_report.py:    for leg in state.get("realized_legs") or []:
+./scripts/build_war_report.py:        log(f"[equity] state.json 更新{updated}条 equity_after")
+./scripts/build_war_report.py:    """删除 reset 边界之前的 trades.csv 行（防止 00:10 cron 回填历史）。"""
+./scripts/build_war_report.py:        "数据源": "state_json_batch",
+./scripts/build_war_report.py:def collapse_burst_realized_legs(legs, entry_spread_min=5):
+./scripts/build_war_report.py:    """state.json realized_legs：按 OKX 同策略同开仓同平仓分钟合并。"""
+./scripts/build_war_report.py:    """对 trades.csv 已平仓行按 OKX 同策略平仓规则合并并重算权益金。"""
+./scripts/build_war_report.py:    log(f"[batch] trades.csv 合并{collapsed}笔，剩余已平仓{len(closed)}")
+./scripts/build_war_report.py:def dedup_trades_csv():
+./scripts/build_war_report.py:    if _bwr_skip_maintenance("dedup_trades_csv"):
+./scripts/build_war_report.py:    legs = state.get("realized_legs") or []
+./scripts/build_war_report.py:    filtered = dedupe_realized_legs(filtered)
+./scripts/build_war_report.py:    state["realized_legs"] = filtered
+./scripts/build_war_report.py:    log(f"[prune_inflated] realized_legs {before}→{after}（剔除 OKX回补）")
+./scripts/build_war_report.py:    """OKX 开平配对 → state.json realized_leg。"""
+./scripts/build_war_report.py:def filter_valid_realized_legs(
+./scripts/build_war_report.py:    legs = dedupe_realized_legs(legs or [])
+./scripts/build_war_report.py:                legs = dedupe_realized_legs(legs)
+./scripts/build_war_report.py:        collapsed, batch_n = collapse_burst_realized_legs(overlapped)
+./scripts/build_war_report.py:def merge_realized_legs_by_ord_id(existing_legs, incoming_legs):
+./scripts/build_war_report.py:def dedupe_realized_legs(legs):
+./scripts/build_war_report.py:    """state.json + trades.csv 已记账的平仓 ordId（防 FIFO 全量覆盖）。"""
+./scripts/build_war_report.py:            for leg in state.get("realized_legs") or []:
+./scripts/build_war_report.py:    """修正 realized_legs：入场价用开仓成交均价，盈亏用策略归因（修复 net_mode fillPnl 错位）。"""
+./scripts/build_war_report.py:    """以 position_*.json 为真源，同步 state.json 开仓 tranches。"""
+./scripts/build_war_report.py:            log("[state] 跳过多 tranche 持仓拆分，保留 state.json 明细")
+./scripts/build_war_report.py:        if not name.startswith("position_") or not name.endswith(".json"):
+./scripts/build_war_report.py:        sid = name.replace("position_", "").replace(".json", "")
+./scripts/build_war_report.py:    """用 state.json 完全重建 trades.csv（已平仓 + 当前 tranche 持仓中）。"""
+./scripts/build_war_report.py:    legs = dedupe_realized_legs(state.get("realized_legs") or [])
+./scripts/build_war_report.py:        state["realized_legs"] = legs
+./scripts/build_war_report.py:        log(f"[rebuild] OKX 同策略平仓合并 {leg_merged} 笔 realized_legs")
+./scripts/build_war_report.py:            "数据源": "state_json",
+./scripts/build_war_report.py:    log(f"[rebuild] trades.csv 自 state 重建: 已平仓{sum(1 for r in rows if r.get('状态')=='已平仓')} "
+./scripts/build_war_report.py:def fix_state_realized_legs(save=True, supplement_fifo=False, collapse_batch=False):
+./scripts/build_war_report.py:    """轻量修正 state.json realized_legs（去重 + 校验）；FIFO/批次合并需显式开启。"""
+./scripts/build_war_report.py:    raw = state.get("realized_legs") or []
+./scripts/build_war_report.py:    collapsed, stats = filter_valid_realized_legs(
+./scripts/build_war_report.py:    state["realized_legs"] = pre_reset + collapsed
+./scripts/build_war_report.py:    stats["after"] = len(state["realized_legs"])
+./scripts/build_war_report.py:def build_trades_csv(fills):
+./scripts/build_war_report.py:    """删除旧的持仓中残留行，仅保留 state.json 对应的真实 tranche 持仓。"""
+./scripts/build_war_report.py:        log(f"[open_rows] 清理{removed}条旧持仓中残留行，等待按 state.json 重建")
+./scripts/build_war_report.py:    """state.json realized_legs → trades.csv 行（fills 缺失时回补）。"""
+./scripts/build_war_report.py:        "数据源": "state_json_est" if est else "state_json",
+./scripts/build_war_report.py:    """state.json realized_legs，仅 reset 后的平仓腿（可选校验过滤）。"""
+./scripts/build_war_report.py:    legs = state.get("realized_legs") or []
+./scripts/build_war_report.py:        post_reset = dedupe_realized_legs(post_reset)
+./scripts/build_war_report.py:    if src == "state_json" and reason not in ("state归因", ""):
+./scripts/build_war_report.py:    if src.startswith("state_json") or reason == "state归因":
+./scripts/build_war_report.py:    """以 state.json realized_legs 为 bot 归因真源，修正 trades.csv 策略错位/缺失/幽灵持仓。"""
+./scripts/build_war_report.py:    # P0 2026-07-03: 「open ordId 出现在 realized_legs」不等于「该仓位已全平」——
+./scripts/build_war_report.py:    """OKX fills 查不到时，用 state.json realized_legs 回补已平仓（禁止重复 ordId）。"""
+./scripts/build_war_report.py:        log("[state] state.json 不存在，跳过已平仓回补")
+./scripts/build_war_report.py:    legs = state.get("realized_legs") or []
+./scripts/build_war_report.py:    eq_path = os.path.join(BASE_DIR, "strategy_eq.json")
+./scripts/build_war_report.py:    """单条 realized_leg 写入 trades.csv（去重）；供 main.py 平仓后立即调用。"""
+./scripts/build_war_report.py:def append_realized_legs(legs):
+./scripts/build_war_report.py:    eq_path = os.path.join(BASE_DIR, "strategy_eq.json")
+./scripts/build_war_report.py:    """把 bot 当前 tranche 同步为 trades.csv 中的「持仓中」行（供战报汇总显示）。"""
+./scripts/build_war_report.py:    eq_path = os.path.join(BASE_DIR, "strategy_eq.json")
+./scripts/build_war_report.py:        log("[持仓] state.json 不存在，跳过 tranche 持仓同步")
+./scripts/build_war_report.py:            "数据源": "state_json",
+./scripts/build_war_report.py:    """将校正后的 realized_leg 写回 state.json。"""
+./scripts/build_war_report.py:    path = STATE_JSON if base_dir is None else os.path.join(base_dir, "state.json")
+./scripts/build_war_report.py:    for i, existing in enumerate(state.get("realized_legs", [])):
+./scripts/build_war_report.py:            state["realized_legs"][i] = {**existing, **leg}
+./scripts/build_war_report.py:    """以 state.json 只读投影重建战报 xlsx（不改 open tranche；open 仅 bot 写入）。"""
+./scripts/build_war_report.py:        dedup_trades_csv()
+./scripts/build_war_report.py:    """定时战报：以 state.json + position 为真源，禁止全量 fills 重建（防幽灵成交膨胀）。"""
+./scripts/build_war_report.py:        bak_path = os.path.join(BASE_DIR, f"trades.csv.bak_{bak_ts}")
+./scripts/build_war_report.py:        dedup_trades_csv()
+./scripts/generate_lifecycle_report.py:    eq = _load_json("strategy_eq.json")
+./scripts/rebuild_strategy_eq.py:"""从 state.realized_legs 回放校正 12 策略 strategy_eq.json（P17 reset 基线 200U）。
+./scripts/rebuild_strategy_eq.py:  3. 写 strategy_eq.json + state equity_after + trades.csv 策略权益金
+./scripts/rebuild_strategy_eq.py:STATE_FILE = "state.json"
+./scripts/rebuild_strategy_eq.py:EQ_FILE = "strategy_eq.json"
+./scripts/rebuild_strategy_eq.py:TRADES_FILE = "trades.csv"
+./scripts/rebuild_strategy_eq.py:    all_legs = list(state.get("realized_legs") or [])
+./scripts/rebuild_strategy_eq.py:    # 同步全部 realized_legs 的 equity_after（含 reset 前保留原值）
+./scripts/rebuild_strategy_eq.py:    state["realized_legs"] = all_legs
+./generate_war_report_v3.py:- 本金从 strategy_eq.json 读取，禁止写死 200
+./generate_war_report_v3.py:SRC = "/home/admin/okx_bot/trades.csv"
+./generate_war_report_v3.py:EQ_PATH = "/home/admin/okx_bot/strategy_eq.json"
+./generate_war_report_v3.py:        print(f"[WAR] trades.csv 不存在 ({SRC})，跳过")
+./generate_war_report_v3.py:        print("[WAR] trades.csv 为空，生成清零战报")
+./p18_sync/pure_reset_for_test.py:    "realized_legs": [],
+./p18_sync/pure_reset_for_test.py:        "state.json", "trades.csv", "strategy_eq.json", "cooldown.json",
+./p18_sync/pure_reset_for_test.py:        pf = os.path.join(BASE, f"position_{sid}.json")
+./p18_sync/pure_reset_for_test.py:            shutil.copy2(pf, os.path.join(dest, f"position_{sid}.json"))
+./p18_sync/pure_reset_for_test.py:    trades = os.path.join(BASE, "trades.csv")
+./p18_sync/pure_reset_for_test.py:    print(f"OK: trades.csv -> trades_archive.csv")
+./p18_sync/pure_reset_for_test.py:        path = os.path.join(BASE, f"position_{sid}.json")
+./p18_sync/pure_reset_for_test.py:    with open(os.path.join(BASE, "state.json"), "w", encoding="utf-8") as fp:
+./p18_sync/pure_reset_for_test.py:    with open(os.path.join(BASE, "strategy_eq.json"), "w", encoding="utf-8") as fp:
+./p18_sync/pure_reset_for_test.py:    with open(os.path.join(BASE, "trades.csv"), "w", encoding="utf-8") as fp:
+./p18_sync/pure_reset_for_test.py:    state = json.load(open(os.path.join(BASE, "state.json"), encoding="utf-8"))
+./p18_sync/pure_reset_for_test.py:    print(f"STATE | legs={len(state.get('realized_legs', []))} tranches={len(state.get('tranches', []))}")
+./p19_a2_7_sync/scripts/state_maintenance_worker.py:    b.TRADES_CSV = os.path.join(base_dir, "trades.csv")
+./p19_a2_7_sync/scripts/state_maintenance_worker.py:    b.STATE_JSON = os.path.join(base_dir, "state.json")
+./p19_a2_7_sync/scripts/state_maintenance_worker.py:def _backup_state(base_dir: str, label: str = "state.json.bak") -> str | None:
+./p19_a2_7_sync/scripts/state_maintenance_worker.py:    state_path = os.path.join(base_dir, "state.json")
+./p19_a2_7_sync/scripts/state_maintenance_worker.py:    state_path = os.path.join(base_dir, "state.json")
+./p19_a2_7_sync/scripts/state_maintenance_worker.py:        state["realized_legs"] = filtered
+./p19_a2_7_sync/scripts/state_maintenance_worker.py:        legs = state.get("realized_legs") or []
+./p19_a2_7_sync/scripts/state_maintenance_worker.py:        deduped = b.dedupe_realized_legs(legs)
+./p19_a2_7_sync/scripts/state_maintenance_worker.py:                state["realized_legs"] = deduped
+./p19_a2_7_sync/scripts/state_maintenance_worker.py:    state_path = os.path.join(base_dir, "state.json")
+./p19_a2_7_sync/scripts/state_maintenance_worker.py:            n = len(state.get("realized_legs") or []) + len(state.get("tranches") or [])
+./p19_a2_7_sync/scripts/state_maintenance_worker.py:            b.dedup_trades_csv()
+./p19_a2_7_sync/scripts/state_maintenance_worker.py:    state_path = os.path.join(base_dir, "state.json")
+./p19_a2_7_sync/scripts/state_maintenance_worker.py:        for leg in state.get("realized_legs") or []
+./p19_a2_7_sync/scripts/state_maintenance_worker.py:            trades_path = os.path.join(base_dir, "trades.csv")
+./p19_a2_7_sync/scripts/reconcile_all_from_okx.py:"""Reconcile all strategy position_*.json + state.json to match OKX net via LIFO open fills."""
+./p19_a2_7_sync/scripts/reconcile_all_from_okx.py:    for name in ("state.json", "trades.csv"):
+./p19_a2_7_sync/scripts/reconcile_all_from_okx.py:        pf = os.path.join(BASE, f"position_{sid}.json")
+./p19_a2_7_sync/scripts/reconcile_all_from_okx.py:        for l in state_now.get("realized_legs", [])
+./p19_a2_7_sync/scripts/reconcile_all_from_okx.py:            for existing in state.get("realized_legs", []):
+./p19_a2_7_sync/scripts/reconcile_all_from_okx.py:    """写入 position_*.json（按策略汇总）+ state tranches（每笔归因一行）。"""
+./p19_a2_7_sync/scripts/reconcile_all_from_okx.py:        tmp = os.path.join(BASE, f"position_{sid}.json.tmp")
+./p19_a2_7_sync/scripts/reconcile_all_from_okx.py:        os.replace(tmp, os.path.join(BASE, f"position_{sid}.json"))
+./p19_a2_7_sync/scripts/reconcile_all_from_okx.py:    total_legs = len(state.get("realized_legs") or [])
+./p19_a2_7_sync/scripts/reconcile_all_from_okx.py:        f"realized_legs 总数 {total_legs} | net {state.get('net_position')} | "
+./p19_a2_7_sync/scripts/reconcile_all_from_okx.py:            path = os.path.join(BASE, f"position_{sid}.json")
+./p19_a2_7_sync/build_war_report.py:1) 拉 OKX fills（limit=100）→ 开/平仓配对写入 trades.csv
+./p19_a2_7_sync/build_war_report.py:TRADES_CSV = os.path.join(BASE_DIR, "trades.csv")
+./p19_a2_7_sync/build_war_report.py:STATE_JSON = os.path.join(BASE_DIR, "state.json")
+./p19_a2_7_sync/build_war_report.py:    eq_path = os.path.join(BASE_DIR, "strategy_eq.json")
+./p19_a2_7_sync/build_war_report.py:    """state.json realized_legs → close_ord_id → equity_after。"""
+./p19_a2_7_sync/build_war_report.py:    for leg in state.get("realized_legs") or []:
+./p19_a2_7_sync/build_war_report.py:    """将回放后的 equity_after 写回 state.json realized_legs。"""
+./p19_a2_7_sync/build_war_report.py:    for leg in state.get("realized_legs") or []:
+./p19_a2_7_sync/build_war_report.py:        log(f"[equity] state.json 更新{updated}条 equity_after")
+./p19_a2_7_sync/build_war_report.py:    """删除 reset 边界之前的 trades.csv 行（防止 00:10 cron 回填历史）。"""
+./p19_a2_7_sync/build_war_report.py:        "数据源": "state_json_batch",
+./p19_a2_7_sync/build_war_report.py:def collapse_burst_realized_legs(legs, entry_spread_min=5):
+./p19_a2_7_sync/build_war_report.py:    """state.json realized_legs：按 OKX 同策略同开仓同平仓分钟合并。"""
+./p19_a2_7_sync/build_war_report.py:    """对 trades.csv 已平仓行按 OKX 同策略平仓规则合并并重算权益金。"""
+./p19_a2_7_sync/build_war_report.py:    log(f"[batch] trades.csv 合并{collapsed}笔，剩余已平仓{len(closed)}")
+./p19_a2_7_sync/build_war_report.py:def dedup_trades_csv():
+./p19_a2_7_sync/build_war_report.py:    if _bwr_skip_maintenance("dedup_trades_csv"):
+./p19_a2_7_sync/build_war_report.py:    legs = state.get("realized_legs") or []
+./p19_a2_7_sync/build_war_report.py:    filtered = dedupe_realized_legs(filtered)
+./p19_a2_7_sync/build_war_report.py:    state["realized_legs"] = filtered
+./p19_a2_7_sync/build_war_report.py:    log(f"[prune_inflated] realized_legs {before}→{after}（剔除 OKX回补）")
+./p19_a2_7_sync/build_war_report.py:    """OKX 开平配对 → state.json realized_leg。"""
+./p19_a2_7_sync/build_war_report.py:def filter_valid_realized_legs(
+./p19_a2_7_sync/build_war_report.py:    legs = dedupe_realized_legs(legs or [])
+./p19_a2_7_sync/build_war_report.py:                legs = dedupe_realized_legs(legs)
+./p19_a2_7_sync/build_war_report.py:        collapsed, batch_n = collapse_burst_realized_legs(overlapped)
+./p19_a2_7_sync/build_war_report.py:def merge_realized_legs_by_ord_id(existing_legs, incoming_legs):
+./p19_a2_7_sync/build_war_report.py:def dedupe_realized_legs(legs):
+./p19_a2_7_sync/build_war_report.py:    """state.json + trades.csv 已记账的平仓 ordId（防 FIFO 全量覆盖）。"""
+./p19_a2_7_sync/build_war_report.py:            for leg in state.get("realized_legs") or []:
+./p19_a2_7_sync/build_war_report.py:    """修正 realized_legs：入场价用开仓成交均价，盈亏用策略归因（修复 net_mode fillPnl 错位）。"""
+./p19_a2_7_sync/build_war_report.py:    """以 position_*.json 为真源，同步 state.json 开仓 tranches。"""
+./p19_a2_7_sync/build_war_report.py:            log("[state] 跳过多 tranche 持仓拆分，保留 state.json 明细")
+./p19_a2_7_sync/build_war_report.py:        if not name.startswith("position_") or not name.endswith(".json"):
+./p19_a2_7_sync/build_war_report.py:        sid = name.replace("position_", "").replace(".json", "")
+./p19_a2_7_sync/build_war_report.py:    """用 state.json 完全重建 trades.csv（已平仓 + 当前 tranche 持仓中）。"""
+./p19_a2_7_sync/build_war_report.py:    legs = dedupe_realized_legs(state.get("realized_legs") or [])
+./p19_a2_7_sync/build_war_report.py:        state["realized_legs"] = legs
+./p19_a2_7_sync/build_war_report.py:        log(f"[rebuild] OKX 同策略平仓合并 {leg_merged} 笔 realized_legs")
+./p19_a2_7_sync/build_war_report.py:            "数据源": "state_json",
+./p19_a2_7_sync/build_war_report.py:    log(f"[rebuild] trades.csv 自 state 重建: 已平仓{sum(1 for r in rows if r.get('状态')=='已平仓')} "
+./p19_a2_7_sync/build_war_report.py:def fix_state_realized_legs(save=True, supplement_fifo=False, collapse_batch=False):
+./p19_a2_7_sync/build_war_report.py:    """轻量修正 state.json realized_legs（去重 + 校验）；FIFO/批次合并需显式开启。"""
+./p19_a2_7_sync/build_war_report.py:    raw = state.get("realized_legs") or []
+./p19_a2_7_sync/build_war_report.py:    collapsed, stats = filter_valid_realized_legs(
+./p19_a2_7_sync/build_war_report.py:    state["realized_legs"] = pre_reset + collapsed
+./p19_a2_7_sync/build_war_report.py:    stats["after"] = len(state["realized_legs"])
+./p19_a2_7_sync/build_war_report.py:def build_trades_csv(fills):
+./p19_a2_7_sync/build_war_report.py:    """删除旧的持仓中残留行，仅保留 state.json 对应的真实 tranche 持仓。"""
+./p19_a2_7_sync/build_war_report.py:        log(f"[open_rows] 清理{removed}条旧持仓中残留行，等待按 state.json 重建")
+./p19_a2_7_sync/build_war_report.py:    """state.json realized_legs → trades.csv 行（fills 缺失时回补）。"""
+./p19_a2_7_sync/build_war_report.py:        "数据源": "state_json_est" if est else "state_json",
+./p19_a2_7_sync/build_war_report.py:    """state.json realized_legs，仅 reset 后的平仓腿（可选校验过滤）。"""
+./p19_a2_7_sync/build_war_report.py:    legs = state.get("realized_legs") or []
+./p19_a2_7_sync/build_war_report.py:        post_reset = dedupe_realized_legs(post_reset)
+./p19_a2_7_sync/build_war_report.py:    if src == "state_json" and reason not in ("state归因", ""):
+./p19_a2_7_sync/build_war_report.py:    if src.startswith("state_json") or reason == "state归因":
+./p19_a2_7_sync/build_war_report.py:    """以 state.json realized_legs 为 bot 归因真源，修正 trades.csv 策略错位/缺失/幽灵持仓。"""
+./p19_a2_7_sync/build_war_report.py:    # P0 2026-07-03: 「open ordId 出现在 realized_legs」不等于「该仓位已全平」——
+./p19_a2_7_sync/build_war_report.py:    """OKX fills 查不到时，用 state.json realized_legs 回补已平仓（禁止重复 ordId）。"""
+./p19_a2_7_sync/build_war_report.py:        log("[state] state.json 不存在，跳过已平仓回补")
+./p19_a2_7_sync/build_war_report.py:    legs = state.get("realized_legs") or []
+./p19_a2_7_sync/build_war_report.py:    eq_path = os.path.join(BASE_DIR, "strategy_eq.json")
+./p19_a2_7_sync/build_war_report.py:    """单条 realized_leg 写入 trades.csv（去重）；供 main.py 平仓后立即调用。"""
+./p19_a2_7_sync/build_war_report.py:def append_realized_legs(legs):
+./p19_a2_7_sync/build_war_report.py:    eq_path = os.path.join(BASE_DIR, "strategy_eq.json")
+./p19_a2_7_sync/build_war_report.py:    """把 bot 当前 tranche 同步为 trades.csv 中的「持仓中」行（供战报汇总显示）。"""
+./p19_a2_7_sync/build_war_report.py:    eq_path = os.path.join(BASE_DIR, "strategy_eq.json")
+./p19_a2_7_sync/build_war_report.py:        log("[持仓] state.json 不存在，跳过 tranche 持仓同步")
+./p19_a2_7_sync/build_war_report.py:            "数据源": "state_json",
+./p19_a2_7_sync/build_war_report.py:    """将校正后的 realized_leg 写回 state.json。"""
+./p19_a2_7_sync/build_war_report.py:    path = STATE_JSON if base_dir is None else os.path.join(base_dir, "state.json")
+./p19_a2_7_sync/build_war_report.py:    for i, existing in enumerate(state.get("realized_legs", [])):
+./p19_a2_7_sync/build_war_report.py:            state["realized_legs"][i] = {**existing, **leg}
+./p19_a2_7_sync/build_war_report.py:    """以 state.json 只读投影重建战报 xlsx（不改 open tranche；open 仅 bot 写入）。"""
+./p19_a2_7_sync/build_war_report.py:        dedup_trades_csv()
+./p19_a2_7_sync/build_war_report.py:    """定时战报：以 state.json + position 为真源，禁止全量 fills 重建（防幽灵成交膨胀）。"""
+./p19_a2_7_sync/build_war_report.py:        bak_path = os.path.join(BASE_DIR, f"trades.csv.bak_{bak_ts}")
+./p19_a2_7_sync/build_war_report.py:        dedup_trades_csv()
+./backtest_exit.py:s = json.load(open("state.json"))
+./audit/equity_reconciler.py:        eq_file = os.path.join(self.bot_dir, "strategy_eq.json")
+./audit/performance.py:    def record_from_state(self, realized_legs: list):
+./audit/performance.py:        """从state.json加载历史成交"""
+./audit/performance.py:        for leg in realized_legs:
+./build_war_report.py:1) 拉 OKX fills（limit=100）→ 开/平仓配对写入 trades.csv
+./build_war_report.py:TRADES_CSV = os.path.join(BASE_DIR, "trades.csv")
+./build_war_report.py:STATE_JSON = os.path.join(BASE_DIR, "state.json")
+./build_war_report.py:    eq_path = os.path.join(BASE_DIR, "strategy_eq.json")
+./build_war_report.py:    """state.json realized_legs → close_ord_id → equity_after。"""
+./build_war_report.py:    for leg in state.get("realized_legs") or []:
+./build_war_report.py:    """将回放后的 equity_after 写回 state.json realized_legs。"""
+./build_war_report.py:    for leg in state.get("realized_legs") or []:
+./build_war_report.py:        log(f"[equity] state.json 更新{updated}条 equity_after")
+./build_war_report.py:    """删除 reset 边界之前的 trades.csv 行（防止 00:10 cron 回填历史）。"""
+./build_war_report.py:        "数据源": "state_json_batch",
+./build_war_report.py:def collapse_burst_realized_legs(legs, entry_spread_min=5):
+./build_war_report.py:    """state.json realized_legs：按 OKX 同策略同开仓同平仓分钟合并。"""
+./build_war_report.py:    """对 trades.csv 已平仓行按 OKX 同策略平仓规则合并并重算权益金。"""
+./build_war_report.py:    log(f"[batch] trades.csv 合并{collapsed}笔，剩余已平仓{len(closed)}")
+./build_war_report.py:def dedup_trades_csv():
+./build_war_report.py:    if _bwr_skip_maintenance("dedup_trades_csv"):
+./build_war_report.py:    legs = state.get("realized_legs") or []
+./build_war_report.py:    filtered = dedupe_realized_legs(filtered)
+./build_war_report.py:    state["realized_legs"] = filtered
+./build_war_report.py:    log(f"[prune_inflated] realized_legs {before}→{after}（剔除 OKX回补）")
+./build_war_report.py:    """OKX 开平配对 → state.json realized_leg。"""
+./build_war_report.py:def filter_valid_realized_legs(
+./build_war_report.py:    legs = dedupe_realized_legs(legs or [])
+./build_war_report.py:                legs = dedupe_realized_legs(legs)
+./build_war_report.py:        collapsed, batch_n = collapse_burst_realized_legs(overlapped)
+./build_war_report.py:def merge_realized_legs_by_ord_id(existing_legs, incoming_legs):
+./build_war_report.py:def dedupe_realized_legs(legs):
+./build_war_report.py:    """state.json + trades.csv 已记账的平仓 ordId（防 FIFO 全量覆盖）。"""
+./build_war_report.py:            for leg in state.get("realized_legs") or []:
+./build_war_report.py:    """修正 realized_legs：入场价用开仓成交均价，盈亏用策略归因（修复 net_mode fillPnl 错位）。"""
+./build_war_report.py:    """以 position_*.json 为真源，同步 state.json 开仓 tranches。"""
+./build_war_report.py:            log("[state] 跳过多 tranche 持仓拆分，保留 state.json 明细")
+./build_war_report.py:        if not name.startswith("position_") or not name.endswith(".json"):
+./build_war_report.py:        sid = name.replace("position_", "").replace(".json", "")
+./build_war_report.py:    """用 state.json 完全重建 trades.csv（已平仓 + 当前 tranche 持仓中）。"""
+./build_war_report.py:    legs = dedupe_realized_legs(state.get("realized_legs") or [])
+./build_war_report.py:        state["realized_legs"] = legs
+./build_war_report.py:        log(f"[rebuild] OKX 同策略平仓合并 {leg_merged} 笔 realized_legs")
+./build_war_report.py:            "数据源": "state_json",
+./build_war_report.py:    log(f"[rebuild] trades.csv 自 state 重建: 已平仓{sum(1 for r in rows if r.get('状态')=='已平仓')} "
+./build_war_report.py:def fix_state_realized_legs(save=True, supplement_fifo=False, collapse_batch=False):
+./build_war_report.py:    """轻量修正 state.json realized_legs（去重 + 校验）；FIFO/批次合并需显式开启。"""
+./build_war_report.py:    raw = state.get("realized_legs") or []
+./build_war_report.py:    collapsed, stats = filter_valid_realized_legs(
+./build_war_report.py:    state["realized_legs"] = pre_reset + collapsed
+./build_war_report.py:    stats["after"] = len(state["realized_legs"])
+./build_war_report.py:def build_trades_csv(fills):
+./build_war_report.py:    """删除旧的持仓中残留行，仅保留 state.json 对应的真实 tranche 持仓。"""
+./build_war_report.py:        log(f"[open_rows] 清理{removed}条旧持仓中残留行，等待按 state.json 重建")
+./build_war_report.py:    """state.json realized_legs → trades.csv 行（fills 缺失时回补）。"""
+./build_war_report.py:        "数据源": "state_json_est" if est else "state_json",
+./build_war_report.py:    """state.json realized_legs，仅 reset 后的平仓腿（可选校验过滤）。"""
+./build_war_report.py:    legs = state.get("realized_legs") or []
+./build_war_report.py:        post_reset = dedupe_realized_legs(post_reset)
+./build_war_report.py:    if src == "state_json" and reason not in ("state归因", ""):
+./build_war_report.py:    if src.startswith("state_json") or reason == "state归因":
+./build_war_report.py:    """以 state.json realized_legs 为 bot 归因真源，修正 trades.csv 策略错位/缺失/幽灵持仓。"""
+./build_war_report.py:    # P0 2026-07-03: 「open ordId 出现在 realized_legs」不等于「该仓位已全平」——
+./build_war_report.py:    """OKX fills 查不到时，用 state.json realized_legs 回补已平仓（禁止重复 ordId）。"""
+./build_war_report.py:        log("[state] state.json 不存在，跳过已平仓回补")
+./build_war_report.py:    legs = state.get("realized_legs") or []
+./build_war_report.py:    eq_path = os.path.join(BASE_DIR, "strategy_eq.json")
+./build_war_report.py:    """单条 realized_leg 写入 trades.csv（去重）；供 main.py 平仓后立即调用。"""
+./build_war_report.py:def append_realized_legs(legs):
+./build_war_report.py:    eq_path = os.path.join(BASE_DIR, "strategy_eq.json")
+./build_war_report.py:    """把 bot 当前 tranche 同步为 trades.csv 中的「持仓中」行（供战报汇总显示）。"""
+./build_war_report.py:    eq_path = os.path.join(BASE_DIR, "strategy_eq.json")
+./build_war_report.py:        log("[持仓] state.json 不存在，跳过 tranche 持仓同步")
+./build_war_report.py:            "数据源": "state_json",
+./build_war_report.py:    """将校正后的 realized_leg 写回 state.json。"""
+./build_war_report.py:    path = STATE_JSON if base_dir is None else os.path.join(base_dir, "state.json")
+./build_war_report.py:    for i, existing in enumerate(state.get("realized_legs", [])):
+./build_war_report.py:            state["realized_legs"][i] = {**existing, **leg}
+./build_war_report.py:    """以 state.json 只读投影重建战报 xlsx（不改 open tranche；open 仅 bot 写入）。"""
+./build_war_report.py:        dedup_trades_csv()
+./build_war_report.py:    """定时战报：以 state.json + position 为真源，禁止全量 fills 重建（防幽灵成交膨胀）。"""
+./build_war_report.py:            bak_path = os.path.join(BASE_DIR, f"trades.csv.bak_{bak_ts}")
+./build_war_report.py:        print("[BWR_MODE] readonly skip trades.csv backup")
+./build_war_report.py:        dedup_trades_csv()
+./position_state.py:"""Unified position state — state.json tranches synced from bot position_*.json."""
+./position_state.py:STATE_FILENAME = "state.json"
+./position_state.py:        "realized_legs": [],
+./position_state.py:    state.setdefault("realized_legs", [])
+./position_state.py:    for leg in state.get("realized_legs", []):
+./position_state.py:        state["realized_legs"] = cleaned
+./position_state.py:    """position_*.json 变更后立即同步 state tranches（单一真源链路）。"""
+./position_state.py:    """Rebuild open tranches from position tracker; preserve realized_legs."""
+./position_state.py:        for i, existing in enumerate(state.get("realized_legs", [])):
+./position_state.py:                state["realized_legs"][i] = merged
+./position_state.py:        existing_legs = state.setdefault("realized_legs", [])

@@ -1,0 +1,422 @@
+# P20-2 Writer Classification
+## Frozen Core
+- scripts/reconcile_all_from_okx.py
+- scripts/state_maintenance_worker.py
+- scripts/build_war_report.py
+
+## External Writers Found
+- ./p19_2c_sync/scripts/build_war_report.py:    body = json.dumps(params) if params is not None else ""
+- ./p19_2c_sync/scripts/build_war_report.py:            json.dump(state, f, ensure_ascii=False)
+- ./p19_2c_sync/scripts/build_war_report.py:        from position_state import load_state, save_state, compute_net_position
+- ./p19_2c_sync/scripts/build_war_report.py:    save_state(state, base_dir)
+- ./p19_2c_sync/scripts/build_war_report.py:        from position_state import load_state, save_state
+- ./p19_2c_sync/scripts/build_war_report.py:    save_state(state, base_dir)
+- ./p19_2c_sync/scripts/build_war_report.py:        from position_state import save_state  # noqa: E402
+- ./p19_2c_sync/scripts/build_war_report.py:        save_state(state, BASE_DIR)
+- ./p19_2c_sync/scripts/build_war_report.py:            json.dump(state, f, ensure_ascii=False)
+- ./p19_2c_sync/scripts/build_war_report.py:    old_sig = json.dumps(rows, ensure_ascii=False, sort_keys=True)
+- ./p19_2c_sync/scripts/build_war_report.py:    new_sig = json.dumps(merged, ensure_ascii=False, sort_keys=True)
+- ./p19_2c_sync/scripts/build_war_report.py:        json.dump(state, fp, ensure_ascii=False)
+- ./p19_a2_9_3_sync/scripts/reconcile_all_from_okx.py:    save_state,
+- ./p19_a2_9_3_sync/scripts/reconcile_all_from_okx.py:            save_state(state, BASE)
+- ./p19_a2_9_3_sync/scripts/reconcile_all_from_okx.py:            json.dump(data, fp)
+- ./p19_a2_9_3_sync/scripts/reconcile_all_from_okx.py:                json.dump(data, fp)
+- ./p19_sync/reconcile_all_from_okx.py:    save_state,
+- ./p19_sync/reconcile_all_from_okx.py:            save_state(state, BASE)
+- ./p19_sync/reconcile_all_from_okx.py:            json.dump(data, fp)
+- ./p19_sync/reconcile_all_from_okx.py:    save_state(state, BASE)
+- ./p19_sync/reconcile_all_from_okx.py:        save_state(state, BASE)
+- ./p19_sync/reconcile_all_from_okx.py:                json.dump(data, fp)
+- ./p19_sync/reconcile_all_from_okx.py:        save_state(state, BASE)
+- ./backups/P19_A2_10_FINAL_20260710_113649/state_maintenance_worker.py:    print(f"{SUMMARY_PREFIX}{json.dumps(summary, ensure_ascii=False)}")
+- ./backups/P19_A2_10_FINAL_20260710_113649/state_maintenance_worker.py:        from position_state import load_state, save_state
+- ./backups/P19_A2_10_FINAL_20260710_113649/state_maintenance_worker.py:        save_state(state, base_dir)
+- ./backups/P19_A2_10_FINAL_20260710_113649/state_maintenance_worker.py:        from position_state import load_state, save_state
+- ./backups/P19_A2_10_FINAL_20260710_113649/state_maintenance_worker.py:                save_state(state, base_dir)
+- ./backups/P19_A2_10_FINAL_20260710_113649/state_maintenance_worker.py:                save_state(state, base_dir)
+- ./backups/P19_A2_10_FINAL_20260710_113649/reconcile_all_from_okx.py:    save_state,
+- ./backups/P19_A2_10_FINAL_20260710_113649/reconcile_all_from_okx.py:            save_state(state, BASE)
+- ./backups/P19_A2_10_FINAL_20260710_113649/reconcile_all_from_okx.py:            json.dump(data, fp)
+- ./backups/P19_A2_10_FINAL_20260710_113649/reconcile_all_from_okx.py:                json.dump(data, fp)
+- ./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:    body = json.dumps(params) if params is not None else ""
+- ./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:            json.dump(state, f, ensure_ascii=False)
+- ./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:        from position_state import load_state, save_state, compute_net_position
+- ./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:    save_state(state, base_dir)
+- ./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:        from position_state import load_state, save_state
+- ./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:    save_state(state, base_dir)
+- ./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:        from position_state import save_state  # noqa: E402
+- ./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:        save_state(state, BASE_DIR)
+- ./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:            json.dump(state, f, ensure_ascii=False)
+- ./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:    old_sig = json.dumps(rows, ensure_ascii=False, sort_keys=True)
+- ./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:    new_sig = json.dumps(merged, ensure_ascii=False, sort_keys=True)
+- ./backups/P19_A2_10_FINAL_20260710_113649/build_war_report.py:        json.dump(state, fp, ensure_ascii=False)
+- ./backups/P19_A2_8_20260710_085356/reconcile_all_from_okx.py:    save_state,
+- ./backups/P19_A2_8_20260710_085356/reconcile_all_from_okx.py:            save_state(state, BASE)
+- ./backups/P19_A2_8_20260710_085356/reconcile_all_from_okx.py:            json.dump(data, fp)
+- ./backups/P19_A2_8_20260710_085356/reconcile_all_from_okx.py:        save_state(state, BASE)
+- ./backups/P19_A2_8_20260710_085356/reconcile_all_from_okx.py:                json.dump(data, fp)
+- ./backups/P19_A2_8_20260710_085356/reconcile_all_from_okx.py:        save_state(state, BASE)
+- ./backups/P19_A2_8_20260710_085356/build_war_report.py:    body = json.dumps(params) if params is not None else ""
+- ./backups/P19_A2_8_20260710_085356/build_war_report.py:            json.dump(state, f, ensure_ascii=False)
+- ./backups/P19_A2_8_20260710_085356/build_war_report.py:        from position_state import load_state, save_state, compute_net_position
+- ./backups/P19_A2_8_20260710_085356/build_war_report.py:    save_state(state, base_dir)
+- ./backups/P19_A2_8_20260710_085356/build_war_report.py:        from position_state import load_state, save_state
+- ./backups/P19_A2_8_20260710_085356/build_war_report.py:    save_state(state, base_dir)
+- ./backups/P19_A2_8_20260710_085356/build_war_report.py:        from position_state import save_state  # noqa: E402
+- ./backups/P19_A2_8_20260710_085356/build_war_report.py:        save_state(state, BASE_DIR)
+- ./backups/P19_A2_8_20260710_085356/build_war_report.py:            json.dump(state, f, ensure_ascii=False)
+- ./backups/P19_A2_8_20260710_085356/build_war_report.py:    old_sig = json.dumps(rows, ensure_ascii=False, sort_keys=True)
+- ./backups/P19_A2_8_20260710_085356/build_war_report.py:    new_sig = json.dumps(merged, ensure_ascii=False, sort_keys=True)
+- ./backups/P19_A2_8_20260710_085356/build_war_report.py:        json.dump(state, fp, ensure_ascii=False)
+- ./backups/P19_FINAL_BASELINE_20260710_113816/state_maintenance_worker.py:    print(f"{SUMMARY_PREFIX}{json.dumps(summary, ensure_ascii=False)}")
+- ./backups/P19_FINAL_BASELINE_20260710_113816/state_maintenance_worker.py:        from position_state import load_state, save_state
+- ./backups/P19_FINAL_BASELINE_20260710_113816/state_maintenance_worker.py:        save_state(state, base_dir)
+- ./backups/P19_FINAL_BASELINE_20260710_113816/state_maintenance_worker.py:        from position_state import load_state, save_state
+- ./backups/P19_FINAL_BASELINE_20260710_113816/state_maintenance_worker.py:                save_state(state, base_dir)
+- ./backups/P19_FINAL_BASELINE_20260710_113816/state_maintenance_worker.py:                save_state(state, base_dir)
+- ./backups/P19_FINAL_BASELINE_20260710_113816/reconcile_all_from_okx.py:    save_state,
+- ./backups/P19_FINAL_BASELINE_20260710_113816/reconcile_all_from_okx.py:            save_state(state, BASE)
+- ./backups/P19_FINAL_BASELINE_20260710_113816/reconcile_all_from_okx.py:            json.dump(data, fp)
+- ./backups/P19_FINAL_BASELINE_20260710_113816/reconcile_all_from_okx.py:                json.dump(data, fp)
+- ./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:    body = json.dumps(params) if params is not None else ""
+- ./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:            json.dump(state, f, ensure_ascii=False)
+- ./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:        from position_state import load_state, save_state, compute_net_position
+- ./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:    save_state(state, base_dir)
+- ./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:        from position_state import load_state, save_state
+- ./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:    save_state(state, base_dir)
+- ./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:        from position_state import save_state  # noqa: E402
+- ./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:        save_state(state, BASE_DIR)
+- ./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:            json.dump(state, f, ensure_ascii=False)
+- ./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:    old_sig = json.dumps(rows, ensure_ascii=False, sort_keys=True)
+- ./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:    new_sig = json.dumps(merged, ensure_ascii=False, sort_keys=True)
+- ./backups/P19_FINAL_BASELINE_20260710_113816/build_war_report.py:        json.dump(state, fp, ensure_ascii=False)
+- ./ws_client.py:        return json.dumps({
+- ./ws_client.py:            msg = json.dumps({"op": "subscribe", "args": self._subscribe_args})
+- ./ws_client.py:        msg = json.dumps({"op": "subscribe", "args": channels})
+- ./p19_2b_sync/reconcile_all_from_okx.py:    save_state,
+- ./p19_2b_sync/reconcile_all_from_okx.py:            save_state(state, BASE)
+- ./p19_2b_sync/reconcile_all_from_okx.py:            json.dump(data, fp)
+- ./p19_2b_sync/reconcile_all_from_okx.py:    save_state(state, BASE)
+- ./p19_2b_sync/reconcile_all_from_okx.py:        save_state(state, BASE)
+- ./p19_2b_sync/reconcile_all_from_okx.py:                json.dump(data, fp)
+- ./p19_2b_sync/reconcile_all_from_okx.py:        save_state(state, BASE)
+- ./main.py:            json.dump(data, f)
+- ./main.py:            json.dump({k: v for k, v in cd.items()}, fp)
+- ./main.py:                json.dump(data, fp)
+- ./venv/lib/python3.12/site-packages/pip/_internal/self_outdated_check.py:        text = json.dumps(state, sort_keys=True, separators=(",", ":"))
+- ./venv/lib/python3.12/site-packages/pip/_internal/cache.py:    s = json.dumps(d, sort_keys=True, separators=(",", ":"), ensure_ascii=True)
+- ./venv/lib/python3.12/site-packages/pip/_internal/network/session.py:        json=json.dumps(data, separators=(",", ":"), sort_keys=True),
+- ./venv/lib/python3.12/site-packages/pip/_internal/commands/list.py:    return json.dumps(data)
+- ./venv/lib/python3.12/site-packages/pip/_internal/commands/install.py:                        json.dump(report.to_dict(), f, indent=2, ensure_ascii=False)
+- ./venv/lib/python3.12/site-packages/pip/_internal/models/direct_url.py:        return json.dumps(self.to_dict(), sort_keys=True)
+- ./venv/lib/python3.12/site-packages/pip/_vendor/pyparsing/results.py:            print(json.dumps(result)) # -> Exception: TypeError: ... is not JSON serializable
+- ./venv/lib/python3.12/site-packages/pip/_vendor/pyparsing/results.py:            print(json.dumps(result.as_dict())) # -> {"month": "31", "day": "1999", "year": "12"}
+- ./venv/lib/python3.12/site-packages/pip/_vendor/pyproject_hooks/_impl.py:        json.dump(obj, f, **kwargs)
+- ./venv/lib/python3.12/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py:        json.dump(obj, f, **kwargs)
+- ./venv/lib/python3.12/site-packages/pip/_vendor/rich/highlighter.py:    console.print_json(json.dumps(obj={"name": "apple", "count": 1}), indent=None)
+- ./venv/lib/python3.12/site-packages/pip/_vendor/requests/help.py:    print(json.dumps(info(), sort_keys=True, indent=2))
+- ./venv/lib/python3.12/site-packages/pip/_vendor/requests/models.py:            # urllib3 requires a bytes-like body. Python 2's json.dumps
+- ./venv/lib/python3.12/site-packages/pip/_vendor/requests/models.py:                body = complexjson.dumps(json, allow_nan=False)
+- ./venv/lib/python3.12/site-packages/pip/_vendor/distro/distro.py:        logger.info(json.dumps(dist.info(), indent=4, sort_keys=True))
+- ./venv/lib/python3.12/site-packages/pip/_vendor/pygments/cmdline.py:    json.dump(result, sys.stdout)
+- ./venv/lib/python3.12/site-packages/pip/_vendor/distlib/metadata.py:                json.dump(d, fileobj, ensure_ascii=True, indent=2,
+- ./venv/lib/python3.12/site-packages/pip/_vendor/distlib/metadata.py:                    json.dump(d, f, ensure_ascii=True, indent=2,
+- ./venv/lib/python3.12/site-packages/pyparsing/results.py:           >>> print(json.dumps(result))
+- ./venv/lib/python3.12/site-packages/pyparsing/results.py:           >>> print(json.dumps(result.as_dict()))
+- ./venv/lib/python3.12/site-packages/ccxt/static_dependencies/lark/tools/serialize.py:    outfile.write('  "data": %s,\n' % json.dumps(data))
+- ./venv/lib/python3.12/site-packages/ccxt/static_dependencies/lark/tools/serialize.py:    outfile.write('  "memo": %s\n' % json.dumps(memo))
+- ./venv/lib/python3.12/site-packages/ccxt/static_dependencies/marshmallow/utils.py:        print(json.dumps(obj, *args, **kwargs))
+- ./venv/lib/python3.12/site-packages/ccxt/digifinex.py:            urlencoded = json.dumps(params)
+- ./venv/lib/python3.12/site-packages/ccxt/test/tests_helpers.py:    return json.dumps(elem)
+- ./venv/lib/python3.12/site-packages/ccxt/pro/apex.py:                'args': [json.dumps(request)],
+- ./venv/lib/python3.12/site-packages/ccxt/async_support/digifinex.py:            urlencoded = json.dumps(params)
+- ./venv/lib/python3.12/site-packages/ccxt/async_support/base/ws/client.py:                send_msg = json.dumps(message, separators=(',', ':'))
+- ./venv/lib/python3.12/site-packages/ccxt/async_support/base/ws/client.py:                send_msg = orjson.dumps(message).decode('utf-8')
+- ./venv/lib/python3.12/site-packages/ccxt/async_support/wavesexchange.py:            body['attachment'] = self.binary_to_base58(self.encode(json.dumps(attachment)))
+- ./venv/lib/python3.12/site-packages/ccxt/async_support/zebpay.py:                body = json.dumps(params)
+- ./venv/lib/python3.12/site-packages/ccxt/base/exchange.py:            return orjson.dumps(data).decode('utf-8')
+- ./venv/lib/python3.12/site-packages/ccxt/base/exchange.py:        return json.dumps(data, separators=(',', ':'), cls=SafeJSONEncoder)
+- ./venv/lib/python3.12/site-packages/ccxt/wavesexchange.py:            body['attachment'] = self.binary_to_base58(self.encode(json.dumps(attachment)))
+- ./venv/lib/python3.12/site-packages/ccxt/zebpay.py:                body = json.dumps(params)
+- ./venv/lib/python3.12/site-packages/okx/api/_client.py:                    body = json.dumps(args[0])
+- ./venv/lib/python3.12/site-packages/okx/api/_client.py:                    body = json.dumps(params_no_empty)
+- ./venv/lib/python3.12/site-packages/matplotlib/font_manager.py:            json.dump(data, fh, cls=_JSONEncoder, indent=2)
+- ./venv/lib/python3.12/site-packages/matplotlib/backends/backend_webagg_core.py:        output.write(f"mpl.toolbar_items = {json.dumps(toolitems)};\n\n")
+- ./venv/lib/python3.12/site-packages/matplotlib/backends/backend_webagg_core.py:        output.write(f"mpl.extensions = {json.dumps(extensions)};\n\n")
+- ./venv/lib/python3.12/site-packages/matplotlib/backends/backend_webagg_core.py:            json.dumps(FigureCanvasWebAggCore.get_default_filetype())))
+- ./venv/lib/python3.12/site-packages/matplotlib/backends/backend_nbagg.py:        self.comm.send({'data': json.dumps(content)})
+- ./venv/lib/python3.12/site-packages/matplotlib/backends/backend_webagg.py:            self.write_message(json.dumps(content))
+- ./venv/lib/python3.12/site-packages/matplotlib/tests/test_backends_interactive.py:            json.dumps({"toolbar": toolbar}),
+- ./venv/lib/python3.12/site-packages/setuptools/config/_validate_pyproject/error_reporting.py:        schema = json.dumps(definition, indent=4)
+- ./venv/lib/python3.12/site-packages/setuptools/config/_validate_pyproject/error_reporting.py:        value = json.dumps(self.ex.value, indent=4)
+- ./venv/lib/python3.12/site-packages/setuptools/tests/namespaces.py:    args = json.dumps(setup_args, indent=4)
+- ./venv/lib/python3.12/site-packages/numpy/__config__.py:            print(json.dumps(CONFIG, indent=2))
+- ./venv/lib/python3.12/site-packages/numpy/lib/introspect.py:    >>> print(json.dumps(dict, indent=2))   # may vary (architecture)
+- ./venv/lib/python3.12/site-packages/redis/http/http_client.py:            return json.dumps(json_body, ensure_ascii=False, separators=(",", ":"))
+- ./venv/lib/python3.12/site-packages/redis/commands/vectorset/commands.py:                attributes_json = json.dumps(attributes)
+- ./venv/lib/python3.12/site-packages/redis/commands/vectorset/commands.py:            attributes_json = json.dumps(attributes)
+- ./venv/lib/python3.12/site-packages/fontTools/ttLib/tables/D__e_b_g.py:        return json.dumps(self.data).encode("utf-8")
+- ./venv/lib/python3.12/site-packages/fontTools/ttLib/tables/D__e_b_g.py:        data = json.dumps(self.data, indent=len(writer.indentwhite))
+- ./venv/lib/python3.12/site-packages/fontTools/ttLib/tables/_b_g_c_l.py:        return json.dumps(self.json, separators=(",", ":"), ensure_ascii=False).encode(
+- ./venv/lib/python3.12/site-packages/fontTools/ttLib/tables/_b_g_c_l.py:        pretty = json.dumps(self.json, indent=2, ensure_ascii=False)
+- ./venv/lib/python3.12/site-packages/fontTools/varLib/interpolatable.py:                print(json.dumps(problems), file=f)
+- ./venv/lib/python3.12/site-packages/aiohttp/web_response.py:    dumps: JSONEncoder = json.dumps,
+- ./venv/lib/python3.12/site-packages/aiohttp/client.py:        json_serialize: JSONEncoder = json.dumps,
+- ./venv/lib/python3.12/site-packages/aiohttp/web_ws.py:        dumps: JSONEncoder = json.dumps,
+- ./venv/lib/python3.12/site-packages/aiohttp/payload.py:        dumps: JSONEncoder = json.dumps,
+- ./venv/lib/python3.12/site-packages/aiohttp/typedefs.py:DEFAULT_JSON_ENCODER = json.dumps
+- ./venv/lib/python3.12/site-packages/requests/help.py:    print(json.dumps(info(), sort_keys=True, indent=2))
+- ./venv/lib/python3.12/site-packages/requests/models.py:            # urllib3 requires a bytes-like body. Python 2's json.dumps
+- ./venv/lib/python3.12/site-packages/requests/models.py:                body = complexjson.dumps(json, allow_nan=False)
+- ./venv/lib/python3.12/site-packages/dateutil/zoneinfo/rebuild.py:            json.dump(metadata, f, indent=4, sort_keys=True)
+- ./venv/lib/python3.12/site-packages/pandas/io/parquet.py:            df_metadata = {"PANDAS_ATTRS": json.dumps(df.attrs)}
+- ./venv/lib/python3.12/site-packages/pandas/io/excel/_odswriter.py:        style_key = json.dumps(style)
+- ./venv/lib/python3.12/site-packages/pandas/io/excel/_xlsxwriter.py:            stylekey = json.dumps(cell.style)
+- ./venv/lib/python3.12/site-packages/pandas/tests/io/json/test_pandas.py:        encoded_json = json.dumps([{"col": "31900441201190696999"}, {"col": "Text"}])
+- ./venv/lib/python3.12/site-packages/pandas/tests/io/json/test_ujson.py:        assert enc == json.dumps(unicode_input)
+- ./venv/lib/python3.12/site-packages/pandas/tests/io/json/test_ujson.py:        assert enc == json.dumps(escaped_input)
+- ./venv/lib/python3.12/site-packages/pandas/tests/io/json/test_ujson.py:        assert enc == json.dumps(surrogate_input)
+- ./venv/lib/python3.12/site-packages/pandas/tests/io/json/test_ujson.py:        assert enc == json.dumps(four_bytes_input)
+- ./venv/lib/python3.12/site-packages/pandas/tests/io/json/test_ujson.py:        assert enc == json.dumps(four_bytes_input)
+- ./venv/lib/python3.12/site-packages/pandas/tests/io/json/test_ujson.py:        assert output == json.dumps(arr_in_arr_input)
+- ./venv/lib/python3.12/site-packages/pandas/tests/io/json/test_ujson.py:        assert output == json.dumps(num_input)
+- ./venv/lib/python3.12/site-packages/pandas/tests/io/json/test_ujson.py:        assert output == json.dumps(builtin_value)
+- ./venv/lib/python3.12/site-packages/pandas/tests/io/json/test_ujson.py:        assert enc == json.dumps(unencoded, ensure_ascii=False)
+- ./venv/lib/python3.12/site-packages/pandas/tests/io/json/test_ujson.py:        assert output == json.dumps(wrapped_input)
+- ./venv/lib/python3.12/site-packages/pandas/tests/io/json/test_ujson.py:        assert output == json.dumps(alone_input)
+- ./venv/lib/python3.12/site-packages/pandas/tests/io/json/test_ujson.py:        assert output == json.dumps(long_input)
+- ./venv/lib/python3.12/site-packages/pandas/tests/io/json/test_ujson.py:        assert json.loads(json.dumps(obj_list, default=str)) == ujson.ujson_loads(
+- ./venv/lib/python3.12/site-packages/pandas/util/_print_versions.py:            sys.stdout.writelines(json.dumps(j, indent=2))
+- ./venv/lib/python3.12/site-packages/pandas/util/_print_versions.py:                json.dump(j, f, indent=2)
+- ./venv/lib/python3.12/site-packages/pandas/core/arrays/arrow/extension_types.py:        return json.dumps(metadata).encode()
+- ./venv/lib/python3.12/site-packages/pandas/core/arrays/arrow/extension_types.py:        return json.dumps(metadata).encode()
+- ./venv/lib64/python3.12/site-packages/pip/_internal/self_outdated_check.py:        text = json.dumps(state, sort_keys=True, separators=(",", ":"))
+- ./venv/lib64/python3.12/site-packages/pip/_internal/cache.py:    s = json.dumps(d, sort_keys=True, separators=(",", ":"), ensure_ascii=True)
+- ./venv/lib64/python3.12/site-packages/pip/_internal/network/session.py:        json=json.dumps(data, separators=(",", ":"), sort_keys=True),
+- ./venv/lib64/python3.12/site-packages/pip/_internal/commands/list.py:    return json.dumps(data)
+- ./venv/lib64/python3.12/site-packages/pip/_internal/commands/install.py:                        json.dump(report.to_dict(), f, indent=2, ensure_ascii=False)
+- ./venv/lib64/python3.12/site-packages/pip/_internal/models/direct_url.py:        return json.dumps(self.to_dict(), sort_keys=True)
+- ./venv/lib64/python3.12/site-packages/pip/_vendor/pyparsing/results.py:            print(json.dumps(result)) # -> Exception: TypeError: ... is not JSON serializable
+- ./venv/lib64/python3.12/site-packages/pip/_vendor/pyparsing/results.py:            print(json.dumps(result.as_dict())) # -> {"month": "31", "day": "1999", "year": "12"}
+- ./venv/lib64/python3.12/site-packages/pip/_vendor/pyproject_hooks/_impl.py:        json.dump(obj, f, **kwargs)
+- ./venv/lib64/python3.12/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py:        json.dump(obj, f, **kwargs)
+- ./venv/lib64/python3.12/site-packages/pip/_vendor/rich/highlighter.py:    console.print_json(json.dumps(obj={"name": "apple", "count": 1}), indent=None)
+- ./venv/lib64/python3.12/site-packages/pip/_vendor/requests/help.py:    print(json.dumps(info(), sort_keys=True, indent=2))
+- ./venv/lib64/python3.12/site-packages/pip/_vendor/requests/models.py:            # urllib3 requires a bytes-like body. Python 2's json.dumps
+- ./venv/lib64/python3.12/site-packages/pip/_vendor/requests/models.py:                body = complexjson.dumps(json, allow_nan=False)
+- ./venv/lib64/python3.12/site-packages/pip/_vendor/distro/distro.py:        logger.info(json.dumps(dist.info(), indent=4, sort_keys=True))
+- ./venv/lib64/python3.12/site-packages/pip/_vendor/pygments/cmdline.py:    json.dump(result, sys.stdout)
+- ./venv/lib64/python3.12/site-packages/pip/_vendor/distlib/metadata.py:                json.dump(d, fileobj, ensure_ascii=True, indent=2,
+- ./venv/lib64/python3.12/site-packages/pip/_vendor/distlib/metadata.py:                    json.dump(d, f, ensure_ascii=True, indent=2,
+- ./venv/lib64/python3.12/site-packages/pyparsing/results.py:           >>> print(json.dumps(result))
+- ./venv/lib64/python3.12/site-packages/pyparsing/results.py:           >>> print(json.dumps(result.as_dict()))
+- ./venv/lib64/python3.12/site-packages/ccxt/static_dependencies/lark/tools/serialize.py:    outfile.write('  "data": %s,\n' % json.dumps(data))
+- ./venv/lib64/python3.12/site-packages/ccxt/static_dependencies/lark/tools/serialize.py:    outfile.write('  "memo": %s\n' % json.dumps(memo))
+- ./venv/lib64/python3.12/site-packages/ccxt/static_dependencies/marshmallow/utils.py:        print(json.dumps(obj, *args, **kwargs))
+- ./venv/lib64/python3.12/site-packages/ccxt/digifinex.py:            urlencoded = json.dumps(params)
+- ./venv/lib64/python3.12/site-packages/ccxt/test/tests_helpers.py:    return json.dumps(elem)
+- ./venv/lib64/python3.12/site-packages/ccxt/pro/apex.py:                'args': [json.dumps(request)],
+- ./venv/lib64/python3.12/site-packages/ccxt/async_support/digifinex.py:            urlencoded = json.dumps(params)
+- ./venv/lib64/python3.12/site-packages/ccxt/async_support/base/ws/client.py:                send_msg = json.dumps(message, separators=(',', ':'))
+- ./venv/lib64/python3.12/site-packages/ccxt/async_support/base/ws/client.py:                send_msg = orjson.dumps(message).decode('utf-8')
+- ./venv/lib64/python3.12/site-packages/ccxt/async_support/wavesexchange.py:            body['attachment'] = self.binary_to_base58(self.encode(json.dumps(attachment)))
+- ./venv/lib64/python3.12/site-packages/ccxt/async_support/zebpay.py:                body = json.dumps(params)
+- ./venv/lib64/python3.12/site-packages/ccxt/base/exchange.py:            return orjson.dumps(data).decode('utf-8')
+- ./venv/lib64/python3.12/site-packages/ccxt/base/exchange.py:        return json.dumps(data, separators=(',', ':'), cls=SafeJSONEncoder)
+- ./venv/lib64/python3.12/site-packages/ccxt/wavesexchange.py:            body['attachment'] = self.binary_to_base58(self.encode(json.dumps(attachment)))
+- ./venv/lib64/python3.12/site-packages/ccxt/zebpay.py:                body = json.dumps(params)
+- ./venv/lib64/python3.12/site-packages/okx/api/_client.py:                    body = json.dumps(args[0])
+- ./venv/lib64/python3.12/site-packages/okx/api/_client.py:                    body = json.dumps(params_no_empty)
+- ./venv/lib64/python3.12/site-packages/matplotlib/font_manager.py:            json.dump(data, fh, cls=_JSONEncoder, indent=2)
+- ./venv/lib64/python3.12/site-packages/matplotlib/backends/backend_webagg_core.py:        output.write(f"mpl.toolbar_items = {json.dumps(toolitems)};\n\n")
+- ./venv/lib64/python3.12/site-packages/matplotlib/backends/backend_webagg_core.py:        output.write(f"mpl.extensions = {json.dumps(extensions)};\n\n")
+- ./venv/lib64/python3.12/site-packages/matplotlib/backends/backend_webagg_core.py:            json.dumps(FigureCanvasWebAggCore.get_default_filetype())))
+- ./venv/lib64/python3.12/site-packages/matplotlib/backends/backend_nbagg.py:        self.comm.send({'data': json.dumps(content)})
+- ./venv/lib64/python3.12/site-packages/matplotlib/backends/backend_webagg.py:            self.write_message(json.dumps(content))
+- ./venv/lib64/python3.12/site-packages/matplotlib/tests/test_backends_interactive.py:            json.dumps({"toolbar": toolbar}),
+- ./venv/lib64/python3.12/site-packages/setuptools/config/_validate_pyproject/error_reporting.py:        schema = json.dumps(definition, indent=4)
+- ./venv/lib64/python3.12/site-packages/setuptools/config/_validate_pyproject/error_reporting.py:        value = json.dumps(self.ex.value, indent=4)
+- ./venv/lib64/python3.12/site-packages/setuptools/tests/namespaces.py:    args = json.dumps(setup_args, indent=4)
+- ./venv/lib64/python3.12/site-packages/numpy/__config__.py:            print(json.dumps(CONFIG, indent=2))
+- ./venv/lib64/python3.12/site-packages/numpy/lib/introspect.py:    >>> print(json.dumps(dict, indent=2))   # may vary (architecture)
+- ./venv/lib64/python3.12/site-packages/redis/http/http_client.py:            return json.dumps(json_body, ensure_ascii=False, separators=(",", ":"))
+- ./venv/lib64/python3.12/site-packages/redis/commands/vectorset/commands.py:                attributes_json = json.dumps(attributes)
+- ./venv/lib64/python3.12/site-packages/redis/commands/vectorset/commands.py:            attributes_json = json.dumps(attributes)
+- ./venv/lib64/python3.12/site-packages/fontTools/ttLib/tables/D__e_b_g.py:        return json.dumps(self.data).encode("utf-8")
+- ./venv/lib64/python3.12/site-packages/fontTools/ttLib/tables/D__e_b_g.py:        data = json.dumps(self.data, indent=len(writer.indentwhite))
+- ./venv/lib64/python3.12/site-packages/fontTools/ttLib/tables/_b_g_c_l.py:        return json.dumps(self.json, separators=(",", ":"), ensure_ascii=False).encode(
+- ./venv/lib64/python3.12/site-packages/fontTools/ttLib/tables/_b_g_c_l.py:        pretty = json.dumps(self.json, indent=2, ensure_ascii=False)
+- ./venv/lib64/python3.12/site-packages/fontTools/varLib/interpolatable.py:                print(json.dumps(problems), file=f)
+- ./venv/lib64/python3.12/site-packages/aiohttp/web_response.py:    dumps: JSONEncoder = json.dumps,
+- ./venv/lib64/python3.12/site-packages/aiohttp/client.py:        json_serialize: JSONEncoder = json.dumps,
+- ./venv/lib64/python3.12/site-packages/aiohttp/web_ws.py:        dumps: JSONEncoder = json.dumps,
+- ./venv/lib64/python3.12/site-packages/aiohttp/payload.py:        dumps: JSONEncoder = json.dumps,
+- ./venv/lib64/python3.12/site-packages/aiohttp/typedefs.py:DEFAULT_JSON_ENCODER = json.dumps
+- ./venv/lib64/python3.12/site-packages/requests/help.py:    print(json.dumps(info(), sort_keys=True, indent=2))
+- ./venv/lib64/python3.12/site-packages/requests/models.py:            # urllib3 requires a bytes-like body. Python 2's json.dumps
+- ./venv/lib64/python3.12/site-packages/requests/models.py:                body = complexjson.dumps(json, allow_nan=False)
+- ./venv/lib64/python3.12/site-packages/dateutil/zoneinfo/rebuild.py:            json.dump(metadata, f, indent=4, sort_keys=True)
+- ./venv/lib64/python3.12/site-packages/pandas/io/parquet.py:            df_metadata = {"PANDAS_ATTRS": json.dumps(df.attrs)}
+- ./venv/lib64/python3.12/site-packages/pandas/io/excel/_odswriter.py:        style_key = json.dumps(style)
+- ./venv/lib64/python3.12/site-packages/pandas/io/excel/_xlsxwriter.py:            stylekey = json.dumps(cell.style)
+- ./venv/lib64/python3.12/site-packages/pandas/tests/io/json/test_pandas.py:        encoded_json = json.dumps([{"col": "31900441201190696999"}, {"col": "Text"}])
+- ./venv/lib64/python3.12/site-packages/pandas/tests/io/json/test_ujson.py:        assert enc == json.dumps(unicode_input)
+- ./venv/lib64/python3.12/site-packages/pandas/tests/io/json/test_ujson.py:        assert enc == json.dumps(escaped_input)
+- ./venv/lib64/python3.12/site-packages/pandas/tests/io/json/test_ujson.py:        assert enc == json.dumps(surrogate_input)
+- ./venv/lib64/python3.12/site-packages/pandas/tests/io/json/test_ujson.py:        assert enc == json.dumps(four_bytes_input)
+- ./venv/lib64/python3.12/site-packages/pandas/tests/io/json/test_ujson.py:        assert enc == json.dumps(four_bytes_input)
+- ./venv/lib64/python3.12/site-packages/pandas/tests/io/json/test_ujson.py:        assert output == json.dumps(arr_in_arr_input)
+- ./venv/lib64/python3.12/site-packages/pandas/tests/io/json/test_ujson.py:        assert output == json.dumps(num_input)
+- ./venv/lib64/python3.12/site-packages/pandas/tests/io/json/test_ujson.py:        assert output == json.dumps(builtin_value)
+- ./venv/lib64/python3.12/site-packages/pandas/tests/io/json/test_ujson.py:        assert enc == json.dumps(unencoded, ensure_ascii=False)
+- ./venv/lib64/python3.12/site-packages/pandas/tests/io/json/test_ujson.py:        assert output == json.dumps(wrapped_input)
+- ./venv/lib64/python3.12/site-packages/pandas/tests/io/json/test_ujson.py:        assert output == json.dumps(alone_input)
+- ./venv/lib64/python3.12/site-packages/pandas/tests/io/json/test_ujson.py:        assert output == json.dumps(long_input)
+- ./venv/lib64/python3.12/site-packages/pandas/tests/io/json/test_ujson.py:        assert json.loads(json.dumps(obj_list, default=str)) == ujson.ujson_loads(
+- ./venv/lib64/python3.12/site-packages/pandas/util/_print_versions.py:            sys.stdout.writelines(json.dumps(j, indent=2))
+- ./venv/lib64/python3.12/site-packages/pandas/util/_print_versions.py:                json.dump(j, f, indent=2)
+- ./venv/lib64/python3.12/site-packages/pandas/core/arrays/arrow/extension_types.py:        return json.dumps(metadata).encode()
+- ./venv/lib64/python3.12/site-packages/pandas/core/arrays/arrow/extension_types.py:        return json.dumps(metadata).encode()
+- ./scripts/govern_state_legs.py:from position_state import load_state, save_state  # noqa: E402
+- ./scripts/govern_state_legs.py:    save_state(state, BASE)
+- ./scripts/govern_state_legs.py:    save_state(state, BASE)
+- ./scripts/trade_review.py:        json.dump(output, f, ensure_ascii=False, indent=2)
+- ./scripts/trade_review.py:            json.dump({"更新时间": output["更新时间"], "全量分析": all_bins}, f, ensure_ascii=False, indent=2)
+- ./scripts/state_maintenance_worker.py:    print(f"{SUMMARY_PREFIX}{json.dumps(summary, ensure_ascii=False)}")
+- ./scripts/state_maintenance_worker.py:        from position_state import load_state, save_state
+- ./scripts/state_maintenance_worker.py:        save_state(state, base_dir)
+- ./scripts/state_maintenance_worker.py:        from position_state import load_state, save_state
+- ./scripts/state_maintenance_worker.py:                save_state(state, base_dir)
+- ./scripts/state_maintenance_worker.py:                save_state(state, base_dir)
+- ./scripts/prune_old_realized_legs.py:from position_state import load_state, save_state  # noqa: E402
+- ./scripts/prune_old_realized_legs.py:    save_state(state, BASE)
+- ./scripts/generate_dashboard.py:    print(json.dumps(d, ensure_ascii=False, indent=2))
+- ./scripts/run_strategy_lab.py:        json.dump(sb, f, ensure_ascii=False, indent=2)
+- ./scripts/run_simulated_live.py:        json.dump(eq, f)
+- ./scripts/run_simulated_live.py:            json.dump(data, f)
+- ./scripts/run_simulated_live.py:        json.dump(sb, f, ensure_ascii=False, indent=2)
+- ./scripts/okx_align_checker.py:        print(json.dumps(bot, indent=2, ensure_ascii=False))
+- ./scripts/generate_dashboard_v2.py:            json.dump(dashboard, f, ensure_ascii=False, indent=2)
+- ./scripts/generate_dashboard_v2.py:        print(json.dumps(d, ensure_ascii=False, indent=2))
+- ./scripts/health_snapshot.py:    tmp.write_text(json.dumps(snap, ensure_ascii=False, indent=2), encoding="utf-8")
+- ./scripts/okx_align_refresh.py:    print(json.dumps({k: data.get(k) for k in [
+- ./scripts/sys_health.py:    json.dump(health, open(OUT, "w"), ensure_ascii=False, indent=2)
+- ./scripts/weekly_eq_adjust.py:        json.dump({k: round(v, 2) for k, v in eq.items()}, f, indent=2)
+- ./scripts/weekly_eq_adjust.py:        json.dump(report, f, ensure_ascii=False, indent=2)
+- ./scripts/reconcile_all_from_okx.py:    save_state,
+- ./scripts/reconcile_all_from_okx.py:            save_state(state, BASE)
+- ./scripts/reconcile_all_from_okx.py:            json.dump(data, fp)
+- ./scripts/reconcile_all_from_okx.py:                json.dump(data, fp)
+- ./scripts/migrate_capital_ledger.py:        json.dump(ledger, f, ensure_ascii=False, indent=2)
+- ./scripts/migrate_capital_ledger.py:    print(json.dumps(entry, ensure_ascii=False))
+- ./scripts/archive/one_shot/repair_021_missing_close.py:from position_state import load_state, save_state  # noqa: E402
+- ./scripts/archive/one_shot/repair_021_missing_close.py:                save_state(state, BASE)
+- ./scripts/archive/one_shot/repair_021_missing_close.py:    save_state(state, BASE)
+- ./scripts/reconcile_equity.py:                json.dump(dash, f, ensure_ascii=False, indent=2)
+- ./scripts/pure_reset_for_test.py:            json.dump(data, fp)
+- ./scripts/pure_reset_for_test.py:        json.dump(EMPTY_STATE, fp, ensure_ascii=False)
+- ./scripts/pure_reset_for_test.py:        json.dump(FRESH_EQ, fp, indent=2)
+- ./scripts/pure_reset_for_test.py:        json.dump({}, fp)
+- ./scripts/pure_reset_for_test.py:        json.dump([], fp)
+- ./scripts/backfill_missing_legs.py:        json.dump(state, f, ensure_ascii=False)
+- ./scripts/backfill_missing_legs.py:        json.dump(state, f, ensure_ascii=False)
+- ./scripts/backfill_missing_legs.py:        json.dump(state, f, ensure_ascii=False)
+- ./scripts/backfill_missing_legs.py:            json.dump(json.load(f), open(STATE_JSON, "w", encoding="utf-8"), ensure_ascii=False)
+- ./scripts/backfill_missing_legs.py:        json.dump(orig, f, ensure_ascii=False)
+- ./scripts/build_war_report.py:    body = json.dumps(params) if params is not None else ""
+- ./scripts/build_war_report.py:            json.dump(state, f, ensure_ascii=False)
+- ./scripts/build_war_report.py:        from position_state import load_state, save_state, compute_net_position
+- ./scripts/build_war_report.py:    save_state(state, base_dir)
+- ./scripts/build_war_report.py:        from position_state import load_state, save_state
+- ./scripts/build_war_report.py:    save_state(state, base_dir)
+- ./scripts/build_war_report.py:        from position_state import save_state  # noqa: E402
+- ./scripts/build_war_report.py:        save_state(state, BASE_DIR)
+- ./scripts/build_war_report.py:            json.dump(state, f, ensure_ascii=False)
+- ./scripts/build_war_report.py:    old_sig = json.dumps(rows, ensure_ascii=False, sort_keys=True)
+- ./scripts/build_war_report.py:    new_sig = json.dumps(merged, ensure_ascii=False, sort_keys=True)
+- ./scripts/build_war_report.py:        json.dump(state, fp, ensure_ascii=False)
+- ./scripts/rebuild_strategy_eq.py:        json.dump({s: final_eq[s] for s in STRATEGY_IDS}, f, ensure_ascii=False, indent=2)
+- ./scripts/rebuild_strategy_eq.py:        json.dump(state, f, ensure_ascii=False)
+- ./indicators.py:            json.dump(payload, f, ensure_ascii=False)
+- ./generate_war_report_v3.py:        json.dump(payload, f, ensure_ascii=False, indent=2)
+- ./p18_sync/pure_reset_for_test.py:            json.dump(data, fp)
+- ./p18_sync/pure_reset_for_test.py:        json.dump(EMPTY_STATE, fp, ensure_ascii=False)
+- ./p18_sync/pure_reset_for_test.py:        json.dump(FRESH_EQ, fp, indent=2)
+- ./p18_sync/pure_reset_for_test.py:        json.dump({}, fp)
+- ./p18_sync/pure_reset_for_test.py:        json.dump([], fp)
+- ./archive/test_lab/paper_signal_lab.py:            f.write(json.dumps(rec, ensure_ascii=False) + "\n")
+- ./archive/test_lab/backtest_engine.py:            json.dumps([t.__dict__ for t in trades], indent=2), encoding="utf-8"
+- ./archive/test_lab/backtest_engine.py:        json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8"
+- ./archive/test_lab/backtest_engine.py:    print(json.dumps(report, ensure_ascii=False, indent=2))
+- ./archive/test_lab/strategy_autopilot.py:    SPECS_PATH.write_text(json.dumps(specs, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+- ./archive/test_lab/strategy_autopilot.py:    print(json.dumps({"ok": True, "evolved": sum(1 for r in evolve_results if r.get("changed"))}, indent=2))
+- ./archive/test_lab/evolve_engine.py:    SPECS_PATH.write_text(json.dumps(specs, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+- ./archive/test_lab/evolve_engine.py:        f.write(json.dumps(rec, ensure_ascii=False) + "\n")
+- ./archive/test_lab/evolve_engine.py:    print(json.dumps({"evolved": len(changed), "results": results}, ensure_ascii=False, indent=2))
+- ./risk_control.py:                json.dump(data, f)
+- ./p19_a2_7_sync/scripts/state_maintenance_worker.py:    print(f"{SUMMARY_PREFIX}{json.dumps(summary, ensure_ascii=False)}")
+- ./p19_a2_7_sync/scripts/state_maintenance_worker.py:        from position_state import load_state, save_state
+- ./p19_a2_7_sync/scripts/state_maintenance_worker.py:        save_state(state, base_dir)
+- ./p19_a2_7_sync/scripts/state_maintenance_worker.py:        from position_state import load_state, save_state
+- ./p19_a2_7_sync/scripts/state_maintenance_worker.py:                save_state(state, base_dir)
+- ./p19_a2_7_sync/scripts/state_maintenance_worker.py:                save_state(state, base_dir)
+- ./p19_a2_7_sync/scripts/reconcile_all_from_okx.py:    save_state,
+- ./p19_a2_7_sync/scripts/reconcile_all_from_okx.py:            save_state(state, BASE)
+- ./p19_a2_7_sync/scripts/reconcile_all_from_okx.py:            json.dump(data, fp)
+- ./p19_a2_7_sync/scripts/reconcile_all_from_okx.py:    save_state(state, BASE)
+- ./p19_a2_7_sync/scripts/reconcile_all_from_okx.py:                json.dump(data, fp)
+- ./p19_a2_7_sync/build_war_report.py:    body = json.dumps(params) if params is not None else ""
+- ./p19_a2_7_sync/build_war_report.py:            json.dump(state, f, ensure_ascii=False)
+- ./p19_a2_7_sync/build_war_report.py:        from position_state import load_state, save_state, compute_net_position
+- ./p19_a2_7_sync/build_war_report.py:    save_state(state, base_dir)
+- ./p19_a2_7_sync/build_war_report.py:        from position_state import load_state, save_state
+- ./p19_a2_7_sync/build_war_report.py:    save_state(state, base_dir)
+- ./p19_a2_7_sync/build_war_report.py:        from position_state import save_state  # noqa: E402
+- ./p19_a2_7_sync/build_war_report.py:        save_state(state, BASE_DIR)
+- ./p19_a2_7_sync/build_war_report.py:            json.dump(state, f, ensure_ascii=False)
+- ./p19_a2_7_sync/build_war_report.py:    old_sig = json.dumps(rows, ensure_ascii=False, sort_keys=True)
+- ./p19_a2_7_sync/build_war_report.py:    new_sig = json.dumps(merged, ensure_ascii=False, sort_keys=True)
+- ./p19_a2_7_sync/build_war_report.py:        json.dump(state, fp, ensure_ascii=False)
+- ./audit/regime_accuracy.py:                json.dump(self._data, f, ensure_ascii=False, indent=2)
+- ./audit/portfolio_manager.py:            json.dump(data, f, ensure_ascii=False, indent=2)
+- ./audit/decision_value.py:                json.dump(self._data, f, ensure_ascii=False, indent=2)
+- ./audit/strategy_director.py:                json.dump(self._log, f, ensure_ascii=False, indent=2)
+- ./audit/promotion_gate.py:            json.dump(report, f, ensure_ascii=False, indent=2)
+- ./audit/signal_audit.py:                f.write(json.dumps(rec, ensure_ascii=False) + "\n")
+- ./audit/equity_reconciler.py:            json.dump(result, f, ensure_ascii=False, indent=2)
+- ./audit/equity_reconciler.py:            json.dump(history, f, ensure_ascii=False, indent=2)
+- ./audit/equity_reconciler.py:            json.dump(data, f, ensure_ascii=False, indent=2)
+- ./audit/strategy_scoreboard.py:                json.dump(self._sb, f, ensure_ascii=False, indent=2)
+- ./audit/strategy_lifecycle.py:            json.dump(data, f, ensure_ascii=False, indent=2)
+- ./audit/strategy_lifecycle.py:            json.dump(data, f, ensure_ascii=False, indent=2)
+- ./audit/performance.py:                json.dump(self._data, f, ensure_ascii=False, indent=2)
+- ./audit/capital_ledger.py:                json.dump(self._ledger, f, ensure_ascii=False, indent=2)
+- ./audit/lab_capital_pool.py:            json.dump(data, f, ensure_ascii=False, indent=2)
+- ./audit/lab_capital_pool.py:            json.dump(data, f, ensure_ascii=False, indent=2)
+- ./audit/outcome_tracker.py:                json.dump(self._db, f, ensure_ascii=False, indent=2)
+- ./audit/decision_tracker.py:                json.dump(existing, f, ensure_ascii=False, indent=2)
+- ./audit/baseline_governance.py:            json.dump(history, f, ensure_ascii=False, indent=2)
+- ./audit/baseline_governance.py:            json.dump(data, f, ensure_ascii=False, indent=2)
+- ./audit/baseline_governance.py:            json.dump(current, f, ensure_ascii=False, indent=2)
+- ./audit/baseline_governance.py:            json.dump(current, f, ensure_ascii=False, indent=2)
+- ./audit/direction_accuracy.py:                json.dump(self._data, f, ensure_ascii=False, indent=2)
+- ./build_war_report.py:    body = json.dumps(params) if params is not None else ""
+- ./build_war_report.py:            json.dump(state, f, ensure_ascii=False)
+- ./build_war_report.py:        from position_state import load_state, save_state, compute_net_position
+- ./build_war_report.py:    save_state(state, base_dir)
+- ./build_war_report.py:        from position_state import load_state, save_state
+- ./build_war_report.py:    save_state(state, base_dir)
+- ./build_war_report.py:        from position_state import save_state  # noqa: E402
+- ./build_war_report.py:        save_state(state, BASE_DIR)
+- ./build_war_report.py:            json.dump(state, f, ensure_ascii=False)
+- ./build_war_report.py:    old_sig = json.dumps(rows, ensure_ascii=False, sort_keys=True)
+- ./build_war_report.py:    new_sig = json.dumps(merged, ensure_ascii=False, sort_keys=True)
+- ./build_war_report.py:        json.dump(state, fp, ensure_ascii=False)
+- ./position_state.py:        json.dump(data, fp)
+- ./position_state.py:def save_state(state: dict, base_dir: str) -> None:
+- ./position_state.py:                    f"[save_state] 全局去重 跳过重复open_ord_id={ooid[:12]} "
+- ./position_state.py:            f"[save_state] 过滤 {dropped} 条旧leg (CUTOFF_TS={CUTOFF_TS}), caller={caller}"
+- ./position_state.py:    save_state(state, base_dir)
+- ./position_state.py:                save_state(state, base_dir)
+- ./position_state.py:        save_state(state, base_dir)
+- ./api.py:        body = json.dumps(params) if params is not None else ""
