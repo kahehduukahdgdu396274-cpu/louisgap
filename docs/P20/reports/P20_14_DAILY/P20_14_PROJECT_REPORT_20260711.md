@@ -47,8 +47,10 @@ Unknown writers:
 Errors:
 (none)
 Safety issues:
-- safety_check.readonly missing/false
-- orphan_csv_entry noted in evidence: CSV ghost entry 07/09 14:30:19 @62723.7 never closed
+- safety_check.readonly missing/false (in 20260710 evidence; not patched)
+- 20260710 evidence still notes orphan_csv_entry (stale snapshot)
+- 20260711 ops: cleaned 17 ghost CSV「持仓中」rows; war report now matches live 3 opens (011/012/021)
+- Note: Bot/Shadow fields above from 20260710 evidence are stale vs live health_snapshot (open=3)
 
 ## Recent Commits
 ```
