@@ -1,0 +1,12 @@
+./main.py:777:    from govern_state_legs import govern_state_legs, catch_up_missing_closes
+./main.py:778:    gv = govern_state_legs(dry_run=True, refresh_war=False)
+./main.py:781:            f"[govern] startup dry-run blocked: {gv} — 须人工 govern_state_legs.py"
+./main.py:795:                f" — 确认后: govern_state_legs.py --catch-up 或 reconcile --apply"
+./scripts/govern_state_legs.py:40:def govern_state_legs(
+./scripts/govern_state_legs.py:167:            govern_state_legs(
+./scripts/prune_old_realized_legs.py:35:def prune_old_realized_legs(
+./scripts/prune_old_realized_legs.py:118:    print(prune_old_realized_legs(keep_days=args.days, dry_run=args.dry_run, refresh_war=args.refresh_war))
+./tests/P20_6_fixture/test_legacy_guard.py:10:            "govern_state_legs.py"
+./tests/P20_6_fixture/test_legacy_guard.py:17:            "govern_state_legs.py"
+./core/legacy_writer_guard.py:9:    "govern_state_legs.py",
+./core/legacy_writer_guard.py:10:    "prune_old_realized_legs.py",

@@ -1,0 +1,1 @@
+17460affd1f48c352d732fa7436b5dc934267bdb93de7b694d2b9f538b71f158  core/legacy_writer_guard.py

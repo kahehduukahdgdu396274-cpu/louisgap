@@ -1,0 +1,8 @@
+/home/admin/okx_bot/core/legacy_writer_guard.py:23: UserWarning: LEGACY WRITER DEPRECATED: govern_state_legs.py
+  warnings.warn(
+CASE legacy dev
+False
+CASE legacy production
+BLOCK LEGACY WRITER BLOCKED: govern_state_legs.py
+CASE normal writer
+True
