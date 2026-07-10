@@ -14,6 +14,13 @@ Production write:
     AND bot.lock 非活跃
 """
 from __future__ import annotations
+try:
+    from core.worker_gate_adapter import authorize_worker_write
+except Exception:
+    authorize_worker_write = None
+
+
+
 
 import argparse
 import datetime
@@ -117,7 +124,15 @@ def _bot_active(base_dir: str) -> bool:
         return False
 
 
+
 def maintenance_write_allowed(dry_run: bool, confirm: bool, base_dir: str) -> bool:
+    # P20_9_5_GATE_INVOKE
+    if authorize_worker_write is not None:
+        try:
+            authorize_worker_write()
+        except Exception as e:
+            log(f"BLOCK: P20 write gate — {e}")
+            return False
     if dry_run or not confirm:
         return False
     if _bot_active(base_dir):
