@@ -1,0 +1,41 @@
+{
+  "timestamp": "2026-07-11 05:28:50",
+  "date": "20260711",
+  "source": "P20-14 Observation Evidence Collector",
+  "runtime_status": {
+    "systemd": "active",
+    "pid": "2864113",
+    "memory": "?",
+    "restart_count_24h": 3
+  },
+  "bot_status": {
+    "active": true,
+    "last_heartbeat": "no heartbeat found",
+    "open_positions": []
+  },
+  "shadow_events": {
+    "errors_24h": [],
+    "risk_blocks": []
+  },
+  "known_writers": [
+    "main.py",
+    "ws_client.py",
+    "strategies.py",
+    "indicators.py",
+    "db.py",
+    "api.py"
+  ],
+  "unknown_writers": [],
+  "permission_blocks": {},
+  "pipeline_status": {
+    "primary_loop": "running",
+    "signal_eval": "check log"
+  },
+  "safety_check": {
+    "readonly": true,
+    "production_write": false,
+    "runtime_modified": false,
+    "cron_modified": false,
+    "bot_restarted": false
+  }
+}
