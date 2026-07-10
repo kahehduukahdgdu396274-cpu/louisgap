@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-06-14 16:10:11",
+  "summary": [
+    {
+      "strategy_id": "003",
+      "capital": 338.52,
+      "closed_trades": 31,
+      "wins": 19,
+      "win_rate_pct": 61.3,
+      "total_pnl": 5.07,
+      "open_positions": 1,
+      "position_direction": "long"
+    },
+    {
+      "strategy_id": "006",
+      "capital": 205.0,
+      "closed_trades": 0,
+      "wins": 0,
+      "win_rate_pct": 0.0,
+      "total_pnl": 0,
+      "open_positions": 3,
+      "position_direction": "long"
+    },
+    {
+      "strategy_id": "012",
+      "capital": 250.0,
+      "closed_trades": 1,
+      "wins": 1,
+      "win_rate_pct": 100.0,
+      "total_pnl": 0.69,
+      "open_positions": 0,
+      "position_direction": null
+    },
+    {
+      "strategy_id": "013",
+      "capital": 201.97,
+      "closed_trades": 0,
+      "wins": 0,
+      "win_rate_pct": 0.0,
+      "total_pnl": 0,
+      "open_positions": 1,
+      "position_direction": "long"
+    }
+  ],
+  "total_closed": 32,
+  "total_open": 5,
+  "total_pnl": 5.76,
+  "trades_count": 37
+}
