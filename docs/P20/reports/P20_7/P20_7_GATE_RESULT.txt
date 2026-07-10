@@ -1,0 +1,3 @@
+{'case': 'worker maintenance', 'status': 'ALLOW', 'detail': {'allowed': True, 'level': 'L1_MAINTENANCE', 'writer': 'state_maintenance_worker.py'}}
+{'case': 'worker runtime misuse', 'status': 'BLOCK', 'detail': {'allowed': False, 'reason': 'maintenance writer requires maintenance mode', 'writer': 'state_maintenance_worker.py'}}
+{'case': 'unknown writer', 'status': 'BLOCK', 'detail': {'allowed': False, 'reason': 'unknown writer blocked', 'writer': 'unknown_writer.py'}}
