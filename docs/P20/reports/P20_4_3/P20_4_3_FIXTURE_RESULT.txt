@@ -1,0 +1,4 @@
+TEST 1 maintenance mode
+ALLOW {'allowed': True, 'level': 'L1_MAINTENANCE', 'writer': 'state_maintenance_worker.py'}
+TEST 2 runtime mode
+BLOCK {"allowed": false, "reason": "maintenance writer requires maintenance mode", "writer": "state_maintenance_worker.py"}
