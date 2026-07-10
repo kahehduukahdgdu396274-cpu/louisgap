@@ -1,38 +1,19 @@
-"""
-P20-10.1 Writer Audit Adapter
-Only observe.
-No write interception.
-No runtime behavior change.
-"""
-from core.writer_audit import writer_audit_event
+from datetime import datetime
 
-WRITER_LEVELS = {
-    "main.py": "L0_RUNTIME",
-    "position_state.py": "L0_RUNTIME",
-    "state_maintenance_worker.py": "L1_MAINTENANCE",
-    "reconcile_all_from_okx.py": "L2_READONLY",
-    "build_war_report.py": "L3_REPORT",
-}
+from core.writer_registry import WriterRegistry
 
 
-def resolve_writer_level(writer):
-    return WRITER_LEVELS.get(writer, "UNKNOWN")
+class WriterAuditAdapter:
+    def __init__(self, registry_path="config/writer_registry.json"):
+        self.registry = WriterRegistry(registry_path)
 
-
-def audit_writer_action(
-    writer,
-    target,
-    mode,
-    sha_before=None,
-    sha_after=None,
-):
-    level = resolve_writer_level(writer)
-    event = writer_audit_event(
-        writer=writer,
-        target=target,
-        mode=mode,
-        sha_before=sha_before,
-        sha_after=sha_after,
-    )
-    event["writer_level"] = level
-    return event
+    def audit_event(self, writer, action, target=None):
+        info = self.registry.get_writer(writer)
+        return {
+            "time": datetime.utcnow().isoformat(),
+            "writer": writer,
+            "action": action,
+            "target": target,
+            "registry": info,
+            "observe_only": True,
+        }
