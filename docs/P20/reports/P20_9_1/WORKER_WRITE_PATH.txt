@@ -1,0 +1,23 @@
+11:Production write:
+39:    parser.add_argument("--repair", action="store_true", help="enable maintenance write mode")
+43:    parser.add_argument("--confirm", action="store_true", help="allow state write (requires --repair)")
+120:def maintenance_write_allowed(dry_run: bool, confirm: bool, base_dir: str) -> bool:
+124:        log("BLOCK: bot.lock active — refuse maintenance write")
+130:    log("BLOCK: maintenance write requires HERMES_A2_FIXTURE or HERMES_MAINTENANCE_APPLY")
+152:        from position_state import load_state, save_state
+172:    if not maintenance_write_allowed(dry_run, confirm, base_dir):
+179:    b.set_bwr_write_mode(True)
+182:        save_state(state, base_dir)
+186:        b.set_bwr_write_mode(False)
+194:        from position_state import load_state, save_state
+222:        if not maintenance_write_allowed(dry_run, confirm, base_dir):
+226:        b.set_bwr_write_mode(True)
+233:                save_state(state, base_dir)
+239:                save_state(state, base_dir)
+243:            b.set_bwr_write_mode(False)
+266:    if not maintenance_write_allowed(dry_run, confirm, base_dir):
+272:        b.set_bwr_write_mode(True)
+281:            b.set_bwr_write_mode(False)
+312:    if not maintenance_write_allowed(dry_run, confirm, base_dir):
+319:        b.set_bwr_write_mode(True)
+339:            b.set_bwr_write_mode(False)
